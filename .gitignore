@@ -30,6 +30,9 @@ analysis/*.pdf
 *.log
 *.out
 *.run.xml
+*.fdb_latexmk
+*.fls
+*.xdv
 main.pdf
 *.synctex.gz
 

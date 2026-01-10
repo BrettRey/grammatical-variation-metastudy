@@ -22,6 +22,7 @@ If cloning fresh, initialize submodules: `git submodule update --init --recursiv
 - Brett Reynolds provides research direction, approves methodological choices, and guides priorities.
 - The AI coding agent implements most code changes and drafts analysis artifacts under Brett’s guidance.
 - Keep this role split visible in repo docs and logs when appropriate.
+- Before editing `main.tex`, review `.house-style/style-guide.md` and follow the house-style rules.
 
 ## Coding Style & Naming Conventions
 - R code follows tidyverse conventions; prefer pipes and `snake_case`.

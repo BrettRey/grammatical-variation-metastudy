@@ -8,6 +8,7 @@ This is a replication/reanalysis project. Deep analytical work is appropriate he
 
 - Brett Reynolds provides research direction, approves methodological choices, and guides priorities.
 - The AI coding agent implements most code changes and drafts analysis artifacts under Brett’s guidance.
+- Before editing `main.tex`, review `.house-style/style-guide.md` and follow the house-style rules.
 
 ## Project Overview
 

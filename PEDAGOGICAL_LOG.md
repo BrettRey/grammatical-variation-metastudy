@@ -290,3 +290,10 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Rationale:** Translate the validated modeling results into publication-ready narrative.
 - **Evidence:** `analysis/RESULTS_SECTION.md`, `analysis/METHODS_SECTION.md`, `analysis/DISCUSSION_SECTION.md`.
 - **Follow-ups:** Integrate into the main manuscript file when ready.
+
+### 2026-01-10 — LaTeX Integration
+- **Topic:** Manuscript drafting
+- **Decision:** Move Results/Methods/Discussion prose into `main.tex` in house style.
+- **Rationale:** Align the narrative with the LaTeX manuscript and style guide conventions.
+- **Evidence:** `main.tex`.
+- **Follow-ups:** Add figure/table environments and citations when ready.

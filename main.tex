@@ -17,7 +17,41 @@
 % TODO: Abstract
 \end{abstract}
 
-% Content sections go here
+\section{Methods}
+
+\subsection{Data and coding}
+We reanalyze the open database compiled by MacKenzie and Robinson, covering \emph{Language Variation and Change} (LVC) and the \emph{Journal of Sociolinguistics} (JSlx) from their first year through \liningnums{2023}. The unit of analysis is a variable--variety pairing. If a paper studies multiple variables or a variable across multiple varieties, each counts separately. The dataset contains \liningnums{427} variable--variety observations.
+
+We follow the authors' coding rules. Variables are included if they express grammatical meanings or functions in more than one way. We exclude phonetic or phonological variables, lexical or discourse-pragmatic choice, discourse or conversation structure, and code-switching. We also exclude the ambiguous variables (\mention{ING}) and (\mention{TD}). Variables are classified as \term{realization} or \term{order}, with omission treated as a subtype of realization. We code \enquote{both} when a variable involves realization and order (for example, the dative alternation).
+
+Social significance is coded as \enquote{not investigated}, \enquote{investigated but not found}, or \enquote{found}. When investigated, we record whether evidence comes from production, perception, or metalinguistic behaviors. In modeling, \enquote{tested} corresponds to \enquote{investigated}, and \enquote{found} is defined conditional on testing.
+
+\subsection{Modeling strategy}
+We fit a joint selection--outcome model in Stan to avoid complete-case dropping of untested rows. The selection stage models the probability that a variable is tested, and the outcome stage models the probability of finding social significance given testing. Predictors in both stages are journal, variation type, and year (z-scored). We include random intercepts for paper, author, and language, with correlations across stages.
+
+Priors are regularizing on the logit scale: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. We sample with four chains, \liningnums{4000} iterations (\liningnums{2000} warmup), $\text{adapt\_delta}=0.99$, and \texttt{max\_treedepth} \liningnums{12}. We also fit brms two-stage models as a baseline comparison.
+
+\section{Results}
+
+\subsection{Model fit and predictive checks}
+Targeted posterior predictive checks show that the Stan model reproduces observed testing and finding rates both overall and within journal and variation-type strata. The observed rates fall well inside the posterior predictive distributions, so the model captures the main selection structure without apparent overfitting.
+
+\subsection{Selection (tested)}
+Testing varies by journal, variation type, and year. LVC is less likely to test variables than JSlx (OR $\approx 0.37$, 95\% CrI 0.17--0.83). Realization variables are more likely to be tested than order variables (OR $\approx 2.33$, 95\% CrI 1.12--4.89). Testing increases over time (OR $\approx 1.65$, 95\% CrI 1.04--2.67). The order--both contrast remains uncertain.
+
+\subsection{Outcome (found \texorpdfstring{$\mid$}{|} tested)}
+Once variables are tested, the probability of finding social significance is high and shows wide overlap across journals and variation types. Outcome effects have intervals that span no effect, so we don't see strong evidence for systematic differences in found rates conditional on testing.
+
+\subsection{Robustness}
+The brms two-stage baseline yields the same qualitative pattern: selection effects are stable, outcome effects are weak. A sensitivity check that counts \enquote{both} variables in both categories reproduces the same testing-rate asymmetry, matching the reporting convention in the original study.
+
+\section{Discussion}
+
+\subsection{Selection vs. outcome}
+The main asymmetry is in selection. Journals, variable type, and time shape which variables are tested, but tested variables show high and overlapping probabilities of social significance. This supports a selection-driven account of the literature: the bottleneck is which variables are studied, not whether tested variables can carry social meaning.
+
+\subsection{Limitations and future work}
+Order variables are rare and heavily concentrated in LVC, so journal comparisons are constrained. Outcome effects are data-limited in sparse categories, especially perception and metalinguistic domains. Future work should expand the corpus beyond two journals and target perception and metalinguistic studies for order variables. It also makes sense to explore alternative temporal structures and to refine the classification of multi-locus variables.
 
 \printbibliography
 
