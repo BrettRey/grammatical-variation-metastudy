@@ -8,7 +8,7 @@ This is a replication/reanalysis project. Deep analytical work is appropriate he
 
 **Source:** MacKenzie, Laurel, and Mary Robinson. 2025. "Spelling out grammatical variation." In *English Sociosyntax: Theory, Evidence, Approaches*, ed. Daniel Duncan and Mary Robinson, 59-95. Berlin: De Gruyter Mouton.
 
-**Repository:** https://github.com/laurelmackenzie/grammatical-variation-metastudy
+**Upstream repository (submodule):** https://github.com/laurelmackenzie/grammatical-variation-metastudy
 
 **Data:** 426 grammatical variables from LVC + Journal of Sociolinguistics through 2023
 
@@ -58,7 +58,7 @@ Question: Is the "social meaning" evidence base structurally skewed toward produ
 
 ```
 grammatical-variation-metastudy/
-├── upstream/                    # Original repo (read-only)
+├── upstream/                    # Original repo (git submodule, read-only)
 │   ├── LVC_JSlx_gramm_var_database.csv
 │   └── LVC_JSlx_gramm_var_database.Rmd
 ├── analysis/                    # Our reanalysis
@@ -79,3 +79,8 @@ grammatical-variation-metastudy/
 ## House Style
 
 Follow portfolio house style for any LaTeX output. R code should be tidyverse-style.
+
+## Submodule Workflow
+
+- Initialize after clone: `git submodule update --init --recursive`
+- Update upstream: `git -C upstream pull --ff-only`, then commit the submodule pointer in this repo.
