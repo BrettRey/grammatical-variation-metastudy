@@ -99,3 +99,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** System-wide Quarto install; full `tidyverse` meta-package.
 - **Evidence:** `analysis/01_data_prep.qmd` package imports; successful Quarto render.
 - **Follow-ups:** Revisit full tidyverse install only if needed for plotting/advanced workflows.
+
+### 2026-01-10 — Privileged Actions Check-In
+- **Topic:** Process hygiene
+- **Decision:** Add explicit guidance to ask before `sudo`/system-wide installs.
+- **Rationale:** User can provide sudo; we should pause when escalation is needed.
+- **Alternatives:** Proceed with local installs only.
+- **Evidence:** `AGENTS.md` and `CLAUDE.md` privileged-action notes.
+- **Follow-ups:** Use this rule for any future tooling or system changes.

@@ -81,6 +81,10 @@ grammatical-variation-metastudy/
 
 Follow portfolio house style for any LaTeX output. R code should be tidyverse-style.
 
+## Privileged Actions
+
+If an action requires `sudo` or system-wide installs, pause and ask the user for the preferred approach (they can run it themselves).
+
 ## Submodule Workflow
 
 - Initialize after clone: `git submodule update --init --recursive`
