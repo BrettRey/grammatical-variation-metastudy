@@ -59,21 +59,21 @@ Before interpreting the results, it's worth asking: does the model fit the data 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{ppc-overall.png}
-  \caption{Posterior predictive checks for overall tested and found rates. Vertical lines mark the observed rates.}
+  \caption{Posterior predictive checks for overall tested and found rates. Each histogram shows rates from 500 simulated datasets; vertical lines mark the observed rates. If the model fits well, the observed rate should fall near the center of the distribution, not in the tails.}
   \label{fig:ppc-overall}
 \end{figure}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{ppc-stratified.png}
-  \caption{Stratified posterior predictive checks by journal and variation type. Vertical lines mark the observed rates.}
+  \caption{Stratified posterior predictive checks by journal and variation type. The same logic applies within subgroups: if observed rates (vertical lines) fall inside the simulated distributions, the model captures the subgroup structure.}
   \label{fig:ppc-stratified}
 \end{figure}
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\textwidth]{probabilities.png}
-  \caption{Population-level predicted probabilities by journal (color) and variation type. Points show posterior medians with 95\% credible intervals.}
+  \caption{Population-level predicted probabilities of testing (top) and finding significance (bottom) by journal and variation type. Points show posterior medians; error bars show 95\% credible intervals. Non-overlapping intervals suggest reliable differences; overlapping intervals suggest uncertainty about whether groups differ.}
   \label{fig:probabilities}
 \end{figure}
 
