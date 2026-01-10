@@ -53,6 +53,14 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/00_analysis_plan.qmd` (Predictors & Recodes).
 - **Follow-ups:** Add a sensitivity model with a smooth if linear fit is inadequate.
 
+### 2026-01-10 — Provisional NA → “null” Recoding
+- **Topic:** Data coding ambiguity
+- **Decision:** Temporarily treat NA in social-significance fields as “null” (analyzed, no effect).
+- **Rationale:** The CSV contains no explicit “null” values despite the original Rmd using them; this keeps the intended three-level outcome.
+- **Alternatives:** Treat NA as “not analyzed” or as true missingness pending clarification.
+- **Evidence:** `analysis/01_data_prep.qmd` (NA recode step).
+- **Follow-ups:** Confirm intended coding with Laurel and revise if needed.
+
 ### 2026-01-10 — Priors Scaffolding (To Be Filled)
 - **Topic:** Prior specification
 - **Decision:** Establish a structured checklist for priors before fitting models.

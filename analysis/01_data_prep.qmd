@@ -20,6 +20,15 @@ library(here)
 
 # Load data
 gramm_var <- read_csv(here("upstream/LVC_JSlx_gramm_var_database.csv"))
+
+# Provisional coding assumption: NA means "null" (analyzed, no effect)
+gramm_var <- gramm_var |>
+  mutate(
+    across(
+      c(social.significance, production, perception, metalinguistic.behaviors),
+      ~ replace_na(.x, "null")
+    )
+  )
 ```
 
 ## Data Overview
@@ -91,7 +100,7 @@ gramm_var |> count(variation_type_recode)
 gramm_var <- gramm_var |>
   mutate(
     # Binary: was social significance tested at all?
-    tested = social.significance != "not analyzed",
+    tested = social.significance %in% c("x", "null"),
 
     # Binary: conditional on testing, was it found?
     found = social.significance == "x",
@@ -104,11 +113,11 @@ gramm_var <- gramm_var |>
     ),
 
     # Same for each domain
-    prod_tested = production != "not analyzed",
+    prod_tested = production %in% c("x", "null"),
     prod_found = production == "x",
-    perc_tested = perception != "not analyzed",
+    perc_tested = perception %in% c("x", "null"),
     perc_found = perception == "x",
-    meta_tested = metalinguistic.behaviors != "not analyzed",
+    meta_tested = metalinguistic.behaviors %in% c("x", "null"),
     meta_found = metalinguistic.behaviors == "x",
 
     # IDs for multilevel modeling
