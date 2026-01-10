@@ -243,3 +243,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Inspect via console only without documenting in analysis.
 - **Evidence:** `analysis/05_custom_stan.qmd` (Diagnostics section).
 - **Follow-ups:** Consider more iterations or reparameterization if R-hat remains > 1.01.
+
+### 2026-01-10 — Rerun Custom Stan (More Iterations)
+- **Topic:** Diagnostics improvement
+- **Decision:** Increase to 4 chains, 4000 iter (2000 warmup) for the custom Stan joint model.
+- **Rationale:** Improve ESS and reduce R-hat > 1.01 after initial diagnostics.
+- **Alternatives:** Simplify random effects; reparameterize; lower adapt_delta.
+- **Evidence:** `analysis/05_custom_stan.qmd`, `analysis/custom_stan_or_table.md`.
+- **Follow-ups:** Re-check diagnostics and update interpretation tables.
