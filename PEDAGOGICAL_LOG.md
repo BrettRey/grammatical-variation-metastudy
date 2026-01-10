@@ -107,3 +107,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Proceed with local installs only.
 - **Evidence:** `AGENTS.md` and `CLAUDE.md` privileged-action notes.
 - **Follow-ups:** Use this rule for any future tooling or system changes.
+
+### 2026-01-10 — System Quarto Installed
+- **Topic:** Tooling alignment
+- **Decision:** Switch from local Quarto to a system-wide install via Homebrew.
+- **Rationale:** Avoid path confusion and align with standard CLI usage.
+- **Alternatives:** Keep user-space Quarto in `~/.local/quarto`.
+- **Evidence:** `quarto --version` returns 1.8.26 after reinstall.
+- **Follow-ups:** Ensure future renders use the system binary.
