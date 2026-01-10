@@ -267,3 +267,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Keep only global PPCs and OR tables.
 - **Evidence:** `analysis/05_custom_stan.qmd`, `analysis/RESULTS_WRITEUP.md`.
 - **Follow-ups:** Use these plots and paragraph in the manuscript draft.
+
+### 2026-01-10 — Reading the Original Chapter
+- **Topic:** Source-method alignment
+- **Decision:** Read the MacKenzie & Robinson chapter to extract coding rules and confirm dataset alignment.
+- **Rationale:** Ensure our modeling reflects the authors’ inclusion/exclusion rules and variable definitions.
+- **Evidence:** `analysis/2026-mackenzie-robinson.pdf` (methods and coding sections).
+- **Notes:** Counts match the paper exactly (386 realization+both, 72 order+both; 290 tested realization, 31 tested order), confirming our recode.
+- **Follow-ups:** Consider sensitivity where “both” is included in both categories to mirror the paper’s reporting.

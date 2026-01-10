@@ -19,5 +19,8 @@ _site/
 # Output
 output/
 
+# Local PDFs
+analysis/*.pdf
+
 # OS
 .DS_Store
