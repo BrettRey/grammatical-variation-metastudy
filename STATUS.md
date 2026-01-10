@@ -34,7 +34,7 @@ Gelman-style Bayesian reanalysis:
 - [x] Prototype selection model in brms (two-stage, domain-specific)
 - [x] Prototype outcome model (domain-specific)
 - [x] Revisit overall joint model with a structure that keeps untested rows (custom Stan)
-- [ ] Check custom Stan diagnostics and refine if needed
+- [x] Check custom Stan diagnostics (minor R-hat > 1.01 for some params)
 
 ## Session Log
 

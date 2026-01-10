@@ -235,3 +235,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Ordinal 0/1/2 outcome model; two-stage brms models.
 - **Evidence:** `stan/selection_model.stan`, `analysis/05_custom_stan.qmd`, `analysis/custom_stan_or_table.md`.
 - **Follow-ups:** Inspect divergences and diagnostics; decide whether to extend to random slopes or simplify.
+
+### 2026-01-10 — Custom Stan Diagnostics
+- **Topic:** MCMC diagnostics
+- **Decision:** Add diagnostics block (R-hat, ESS, divergences, treedepth) to the custom Stan notebook.
+- **Rationale:** Make sampler health visible before interpreting estimates.
+- **Alternatives:** Inspect via console only without documenting in analysis.
+- **Evidence:** `analysis/05_custom_stan.qmd` (Diagnostics section).
+- **Follow-ups:** Consider more iterations or reparameterization if R-hat remains > 1.01.

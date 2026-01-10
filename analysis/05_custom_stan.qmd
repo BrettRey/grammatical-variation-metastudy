@@ -83,6 +83,38 @@ if (file.exists(fit_path)) {
 }
 ```
 
+## Diagnostics
+
+```{r}
+#| label: diagnostics
+summ <- rstan::summary(fit)$summary
+rhat <- summ[, "Rhat"]
+n_eff <- summ[, "n_eff"]
+
+diagnostics <- tibble(
+  max_rhat = max(rhat, na.rm = TRUE),
+  min_n_eff = min(n_eff, na.rm = TRUE),
+  rhat_gt_1_01 = sum(rhat > 1.01, na.rm = TRUE),
+  rhat_gt_1_05 = sum(rhat > 1.05, na.rm = TRUE)
+)
+
+sampler <- rstan::get_sampler_params(fit, inc_warmup = FALSE)
+divergences <- sum(vapply(sampler, function(x) sum(x[, "divergent__"]), numeric(1)))
+max_treedepth_observed <- max(vapply(sampler, function(x) max(x[, "treedepth__"]), numeric(1)))
+max_treedepth_control <- 12
+treedepth_hits <- sum(vapply(sampler, function(x) sum(x[, "treedepth__"] >= max_treedepth_control), numeric(1)))
+
+diag_summary <- diagnostics |>
+  mutate(
+    divergences = divergences,
+    max_treedepth_observed = max_treedepth_observed,
+    max_treedepth_control = max_treedepth_control,
+    treedepth_hits = treedepth_hits
+  )
+
+diag_summary
+```
+
 ## Fixed Effects (Odds Ratios)
 
 ```{r}
