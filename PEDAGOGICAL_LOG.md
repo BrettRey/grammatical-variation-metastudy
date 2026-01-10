@@ -428,3 +428,12 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Hypophora:** Addressed power limitation directly ("Could the data distinguish... No.").
 - **Rationale:** Classical figures provide rhythm and authority without adding jargon; they make the complex selection/outcome distinction easier to parse and remember.
 - **Evidence:** `main.tex` rhetorical edits.
+
+### 2026-01-10 — House Style Standardisation
+- **Topic:** Visual and orthographic consistency
+- **Decision:** Enforced Canadian/Oxford spelling and semantic markup.
+  - **Spelling:** `behaviors` → `behaviours`, `modeling` → `modelling`, `center` → `centre`, `catalog` → `catalogue`.
+  - **Markup:** `\emph{}` → `\olang{}` for object language examples.
+  - **Flow:** Removed "it's worth asking" (throat-clearer).
+- **Rationale:** Aligns with author's institutional context (U of T) and `style-guide.md` preference for precision.
+- **Evidence:** `main.tex` spelling/markup updates.

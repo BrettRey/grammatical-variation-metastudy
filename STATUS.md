@@ -93,7 +93,13 @@ Gelman-style Bayesian reanalysis:
   - Inclusio/Ring Composition: "chosen to look for" (Method/Discussion bracket)
   - Symploce: "Selection asks... Outcome asks..." definition
   - Isocolon: Abstract thesis on "asymmetry in record reflecting design"
+  - Symploce: "Selection asks... Outcome asks..." definition
+  - Isocolon: Abstract thesis on "asymmetry in record reflecting design"
   - Hypophora: "Could the data distinguish... No." (Power limitation)
+- Applied strict house style:
+  - Canadian/Oxford spelling (behaviour, modelling, centre, catalogue)
+  - Semantic markup: `\olang{}` for object language examples
+  - Removed throat-clearers ("it's worth asking")
 
 ## Connections to Other Work
 
