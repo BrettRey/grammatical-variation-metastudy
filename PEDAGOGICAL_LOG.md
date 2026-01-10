@@ -418,3 +418,13 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - "GIP": "triumph or clue", "honour roll not graduating class".
 - **Rationale:** Methodological papers risk dryness; dry wit signals self-awareness about the "bookkeeping" nature of the problem without mocking the field.
 - **Evidence:** `main.tex` scattered edits.
+
+### 2026-01-10 — Rhetorical Sharpening
+- **Topic:** Argumentative structure and memorability
+- **Decision:** Applied classical rhetorical figures to tighten key takeaways.
+  - **Inclusio:** "chosen to look for" brackets the Method-Discussion arc.
+  - **Symploce:** Defined stages using parallel "X asks... Y asks..." structure.
+  - **Isocolon:** Balanced abstract thesis ("Testing rates differ... success rates are high").
+  - **Hypophora:** Addressed power limitation directly ("Could the data distinguish... No.").
+- **Rationale:** Classical figures provide rhythm and authority without adding jargon; they make the complex selection/outcome distinction easier to parse and remember.
+- **Evidence:** `main.tex` rhetorical edits.

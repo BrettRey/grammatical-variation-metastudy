@@ -89,6 +89,11 @@ Gelman-style Bayesian reanalysis:
   - Discussion: Capacity vs. Research Filter distinction; Causal pathways note
 - Refined opening sentence: "Sociolinguistic theory has long debated" (avoids implying high testing frequency).
 - Injected controlled humour (planes analogy, OR quip, honour-roll framing) to adjust tone.
+- Applied rhetorical figures for argumentative clarity:
+  - Inclusio/Ring Composition: "chosen to look for" (Method/Discussion bracket)
+  - Symploce: "Selection asks... Outcome asks..." definition
+  - Isocolon: Abstract thesis on "asymmetry in record reflecting design"
+  - Hypophora: "Could the data distinguish... No." (Power limitation)
 
 ## Connections to Other Work
 
