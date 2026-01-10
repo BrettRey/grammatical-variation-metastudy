@@ -104,6 +104,8 @@ Gelman-style Bayesian reanalysis:
 - Applied plain style prose:
   - Converted bulleted lists to narrative paragraphs (Results)
   - Replaced "must"/"Note that"/"Furthermore" with simpler alternatives.
+  - Removed "Thus" connectors.
+- Formatted lining numbers with commas (4,000).
 
 ## Connections to Other Work
 

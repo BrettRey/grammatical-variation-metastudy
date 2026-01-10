@@ -445,3 +445,10 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Syntax:** "must first choose" → "first choose", "Note that" → Ø, "Furthermore" → "Also".
 - **Rationale:** House style prohibits "hackneyed academic connectives" and encourages narrative flow for argument sequences.
 - **Evidence:** `main.tex` prose refinements.
+
+### 2026-01-10 — Final Polish
+- **Topic:** Micro-typorgraphy and cohesion
+- **Decision:** Fine-tuning.
+  - **Connectors:** Removed "Thus" to avoid heavy transition.
+  - **Formatting:** Added commas to large lining numbers (4,000).
+- **Evidence:** `main.tex`.
