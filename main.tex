@@ -52,7 +52,7 @@ A note on significance testing: this analysis reports credible intervals rather 
 \section{Results}
 
 \subsection{Model fit and predictive checks}
-Posterior predictive checks (PPCs) ask whether replicated data from the fitted model resemble the observed data. Here, the replicated tested and found rates cluster around the observed rates overall and within journal and variation-type strata (Figures~\ref{fig:ppc-overall} and~\ref{fig:ppc-stratified}). The observed rates fall well inside the predictive distributions, suggesting that the model captures the main selection structure without apparent overfitting. Population-level predicted probabilities make the selection patterns easier to read (Figure~\ref{fig:probabilities}).
+Before interpreting the results, it's worth asking: does the model fit the data well? Posterior predictive checks (PPCs) answer this by simulating new datasets from the fitted model and asking whether they resemble the observed data. Here, the replicated tested and found rates cluster around the observed rates overall and within journal and variation-type strata (Figures~\ref{fig:ppc-overall} and~\ref{fig:ppc-stratified}). The observed rates fall well inside the predictive distributions, suggesting that the model captures the main selection structure without apparent overfitting. Population-level predicted probabilities make the selection patterns easier to read (Figure~\ref{fig:probabilities}).
 
 \begin{figure}[t]
   \centering
@@ -76,17 +76,29 @@ Posterior predictive checks (PPCs) ask whether replicated data from the fitted m
 \end{figure}
 
 \subsection{Selection (tested)}
-Odds ratios (ORs) and credible intervals (CrIs) summarize the selection stage. Values above 1 mean higher odds of being tested, and values below 1 mean lower odds. Testing varies by journal, variation type, and year. LVC is less likely to test variables than JSlx (OR $\approx 0.37$, 95\% CrI 0.17--0.83). Realization variables are more likely to be tested than order variables (OR $\approx 2.33$, 95\% CrI 1.12--4.89). Testing increases over time (OR $\approx 1.65$, 95\% CrI 1.04--2.67). The order--both contrast remains uncertain.
+Odds ratios (ORs) and credible intervals (CrIs) summarize the selection stage. Values above 1 mean higher odds of being tested; values below 1 mean lower odds.
+
+Testing varies by journal, variation type, and year:
+\begin{itemize}
+  \item \textbf{Journal}: LVC is less likely to test variables than JSlx (OR $\approx 0.37$, 95\% CrI 0.17--0.83). In plain terms, variables in LVC have about one-third the odds of being tested for social significance compared to JSlx.
+  \item \textbf{Variation type}: Realization variables are more likely to be tested than order variables (OR $\approx 2.33$, 95\% CrI 1.12--4.89). Realization variables have more than twice the odds of being tested.
+  \item \textbf{Year}: Testing increases over time (OR $\approx 1.65$, 95\% CrI 1.04--2.67). For each decade, testing odds increase by about 65\%.
+\end{itemize}
+The order--both contrast remains uncertain, with a wide interval spanning no effect.
 
 \subsection{Outcome (found \texorpdfstring{$\mid$}{|} tested)}
 Conditional on testing, success rates are high and comparable across types. The probability of finding social significance is high (approximately 88--94\% across subgroups) and shows wide overlap across journals and variation types. Outcome effects have intervals that span no effect, consistent with selection rather than capacity as the bottleneck. Wide credible intervals in sparse categories~-- order variables, perception and metalinguistic domains~-- reflect data limitations, not absence of effect. The model's partial pooling shrinks extreme estimates toward the population mean, so intervals spanning no effect should be read as \enquote{data can't resolve this}, not \enquote{effect is absent.}
 
 \subsection{Robustness}
-The brms two-stage baseline yields the same qualitative pattern: selection effects are stable, outcome effects are weak. The centered-intercept sensitivity run reproduces the same conclusions.
+A good analysis shouldn't depend on arbitrary modeling choices. Several robustness checks confirm that the main findings are stable:
+
+The brms two-stage baseline yields the same qualitative pattern: selection effects are stable, outcome effects are weak. The centered-intercept sensitivity run~-- which uses priors centered on observed rates rather than agnostic priors~-- reproduces the same conclusions.
 
 An extended model adds a journal $\times$ variation-type interaction in the selection stage. If institutional framing requirements drive selection, JSlx might show a larger gap between realization and order than LVC. The interaction coefficients represent the multiplicative change in the LVC effect for each variation type relative to the reference (both). These coefficients have wide intervals spanning no effect (order:LVC OR $\approx 0.54$, 95\% CrI 0.23--1.29; realization:LVC OR $\approx 0.66$, 95\% CrI 0.30--1.47), so the data don't clearly support differential selection by journal.
 
 A piecewise-linear year effect (two interior knots) tests whether selection trends are non-linear. The spline coefficients point in the same direction (ORs 1.19, 1.72, 1.32; all intervals spanning 1), consistent with the primary model's linear year assumption rather than distinct period effects.
+
+\textbf{Summary}: Selection effects are robust across modeling choices. The outcome effects remain weak and uncertain regardless of how the model is specified, strengthening the conclusion that selection~-- not capacity~-- drives the published pattern.
 
 \section{Discussion}
 
