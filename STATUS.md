@@ -105,6 +105,7 @@ Gelman-style Bayesian reanalysis:
   - Converted bulleted lists to narrative paragraphs (Results)
   - Replaced "must"/"Note that"/"Furthermore" with simpler alternatives.
   - Removed "Thus" connectors.
+  - Removed improper "we" pronouns for single-author voice.
 - Formatted lining numbers with commas (4,000).
 
 ## Connections to Other Work

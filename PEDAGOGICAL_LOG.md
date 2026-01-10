@@ -451,4 +451,5 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Decision:** Fine-tuning.
   - **Connectors:** Removed "Thus" to avoid heavy transition.
   - **Formatting:** Added commas to large lining numbers (4,000).
+  - **Voice:** Removed improper "we" pronouns ("we typicaly look" → "researchers typically look", "so we provide" → "so I provide").
 - **Evidence:** `main.tex`.
