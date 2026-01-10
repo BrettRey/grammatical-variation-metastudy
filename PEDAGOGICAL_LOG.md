@@ -453,4 +453,5 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Formatting:** Added commas to large lining numbers (4,000).
   - **Voice:** Removed improper "we" pronouns ("we typicaly look" → "researchers typically look", "so we provide" → "so I provide").
   - **Redundancy:** Removed repetitive partial pooling explanation from Results (already in Methods).
+  - **Tables:** Added Table 1 (Descriptive) and Table 2 (Estimates) to anchor abstract claims in visible data.
 - **Evidence:** `main.tex`.

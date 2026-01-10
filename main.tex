@@ -20,7 +20,23 @@ Sociolinguistic theory often assumes that some parts of grammar (like word order
 \section{Methods}
 
 \subsection{Data and coding}
-This reanalysis uses the open database compiled by \textcite{mackenzie2025spelling}, covering \emph{Language Variation and Change} (LVC) and the \emph{Journal of Sociolinguistics} (JSlx) from each journal's first year of publication through \liningnums{2023}. The unit of analysis is a variable--variety pairing. If a paper studies multiple variables or a variable across multiple varieties, each counts separately. The dataset contains \liningnums{427} variable--variety observations.\footnote{Materials and code are available at \href{https://github.com/BrettRey/grammatical-variation-metastudy}{github.com/BrettRey/grammatical-variation-metastudy}.}
+This reanalysis uses the open database compiled by \textcite{mackenzie2025spelling}, covering \emph{Language Variation and Change} (LVC) and the \emph{Journal of Sociolinguistics} (JSlx) from each journal's first year of publication through \liningnums{2023}. The unit of analysis is a variable--variety pairing. If a paper studies multiple variables or a variable across multiple varieties, each counts separately. The dataset contains \liningnums{427} variable--variety observations.\footnote{Materials and code are available at \href{https://github.com/BrettRey/grammatical-variation-metastudy}{github.com/BrettRey/grammatical-variation-metastudy}.} Table~\ref{tab:descriptive} details the distribution of variables by journal and variation type, highlighting the scarcity of order variables, particularly in JSlx.
+
+\begin{table}[t]
+\centering
+\caption{Distribution of variables by journal and variation type in the full dataset ($N=427$).}
+\label{tab:descriptive}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Journal} & \textbf{Realization} & \textbf{Order} & \textbf{Both} & \textbf{Total} \\
+\midrule
+JSlx & 137 & 0 & 2 & 139 \\
+LVC & 218 & 41 & 29 & 288 \\
+\midrule
+\textbf{Total} & \textbf{355} & \textbf{41} & \textbf{31} & \textbf{427} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 Coding follows \textcite{mackenzie2025spelling}, which adapts the form--order--omission scheme of \textcite{mansfield2023dialect} and treats omission as a subtype of realization. Variables are included if they express grammatical meanings or functions in more than one way. Phonetic or phonological variables, lexical or discourse-pragmatic choice, discourse or conversation structure, and code-switching are excluded. The ambiguous variables (\mention{ING}) and (\mention{TD}) are also excluded. Variables are classified as \term{realization}, \term{order}, or \term{both}, with omission treated as a subtype of realization. The label \enquote{both} is used when a variable involves realization and order (for example, the dative alternation).
 
@@ -75,9 +91,24 @@ Before interpreting the results, does the model fit the data well? Posterior pre
 \end{figure}
 
 \subsection{Selection (tested)}
-Odds ratios (ORs) and credible intervals (CrIs) summarize the selection stage. Values above 1 mean higher odds of being tested; values below 1 mean lower odds.
+Table~\ref{tab:selection_estimates} summarizes the selection stage. Odds ratios (ORs) above 1 indicate higher odds of being tested.
 
-Testing varies by journal, variation type, and year. First, LVC is less likely to test variables than JSlx (OR $\approx 0.37$, 95\% CrI 0.17--0.83). In plain terms, variables in LVC have about one-third the odds of being tested for social significance compared to JSlx. Second, realization variables are more likely to be tested than order variables (OR $\approx 2.33$, 95\% CrI 1.12--4.89), with more than twice the odds of being tested. Finally, testing increases over time (OR $\approx 1.65$, 95\% CrI 1.04--2.67); for each decade, testing odds increase by about 65\%.
+\begin{table}[t]
+\centering
+\caption{Posterior estimates for the selection stage (probability of being tested). Odds Ratios (OR) are presented with 95\% Credible Intervals (CrI).}
+\label{tab:selection_estimates}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Predictor} & \textbf{OR (Median)} & \textbf{95\% CrI} \\
+\midrule
+Journal: LVC (vs. JSlx) & 0.37 & [0.17, 0.83] \\
+Type: Realization (vs. Order) & 2.33 & [1.12, 4.89] \\
+Year (per SD $\approx$ 9.6 years) & 1.65 & [1.04, 2.67] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Testing varies notably by journal, variation type, and year. First, LVC is less likely to test variables than JSlx. In plain terms, variables in LVC have about one-third the odds of being tested for social significance compared to JSlx. Second, realization variables are more likely to be tested than order variables, with more than twice the odds of being tested. Finally, testing increases over time; for each decade, testing odds increase by about 65\%.
 The order--both contrast remains uncertain, with a wide interval spanning no effect.
 
 \subsection{Outcome (found \texorpdfstring{$\mid$}{|} tested)}

@@ -107,6 +107,7 @@ Gelman-style Bayesian reanalysis:
   - Removed "Thus" connectors.
   - Removed improper "we" pronouns for single-author voice.
   - Removed redundant "partial pooling" explanation from Results.
+  - Added Tables: Descriptive (N=427) and Selection Estimates (ORs).
 - Formatted lining numbers with commas (4,000).
 
 ## Connections to Other Work
