@@ -408,3 +408,13 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Discussion:** Explicitly distinguished "capacity" from "research filter" (Khalidi/Godfrey-Smith). Added causal pathways (salience, register) as the real target for future work.
 - **Rationale:** The initial draft was too focused on the "methodological refinement" and missed the core story about the construction of scientific knowledge. The high "found" rate is now framed as evidence of a filter, not just capacity.
 - **Evidence:** `main.tex` abstract and §4.2.
+
+### 2026-01-10 — Tone Adjustment (Per Reviewer Suggestion)
+- **Topic:** Rhetorical texture
+- **Decision:** Injected controlled humour to lighten the methodological critique.
+  - "Survivor bias": planes/fleet analogy.
+  - "Reading the output": "readers wish for predicted probabilities".
+  - "PPCs": "if it looks fake, don't trust it".
+  - "GIP": "triumph or clue", "honour roll not graduating class".
+- **Rationale:** Methodological papers risk dryness; dry wit signals self-awareness about the "bookkeeping" nature of the problem without mocking the field.
+- **Evidence:** `main.tex` scattered edits.

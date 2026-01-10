@@ -88,6 +88,7 @@ Gelman-style Bayesian reanalysis:
   - Interpretation: Predictive implications over "CrI excludes 1"
   - Discussion: Capacity vs. Research Filter distinction; Causal pathways note
 - Refined opening sentence: "Sociolinguistic theory has long debated" (avoids implying high testing frequency).
+- Injected controlled humour (planes analogy, OR quip, honour-roll framing) to adjust tone.
 
 ## Connections to Other Work
 
