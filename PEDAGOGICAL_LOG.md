@@ -123,3 +123,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Wait to scaffold until EDA is complete.
 - **Evidence:** `analysis/02_eda.qmd` (joint model scaffold sections).
 - **Follow-ups:** Install `brms` and run prior predictive checks once ready.
+
+### 2026-01-10 — brms Installed
+- **Topic:** Modeling toolchain
+- **Decision:** Install `brms` (and dependencies, including `rstan`) via CRAN.
+- **Rationale:** Enables joint-model prototyping directly from the scaffold notebook.
+- **Alternatives:** Use `cmdstanr` only with custom Stan.
+- **Evidence:** `Rscript -e "library(brms)"` succeeded.
+- **Follow-ups:** Run prior predictive checks in `analysis/02_eda.qmd`.
