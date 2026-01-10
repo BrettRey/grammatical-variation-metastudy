@@ -283,3 +283,10 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Keep “both” as its own category only.
 - **Evidence:** `analysis/02_eda.qmd` (both-sensitivity section).
 - **Follow-ups:** Reference this check in the results narrative.
+
+### 2026-01-10 — Draft Results/Methods/Discussion Sections
+- **Topic:** Manuscript scaffolding
+- **Decision:** Draft prose sections for Results, Methods, and Discussion based on the custom Stan model and comparison checks.
+- **Rationale:** Translate the validated modeling results into publication-ready narrative.
+- **Evidence:** `analysis/RESULTS_SECTION.md`, `analysis/METHODS_SECTION.md`, `analysis/DISCUSSION_SECTION.md`.
+- **Follow-ups:** Integrate into the main manuscript file when ready.
