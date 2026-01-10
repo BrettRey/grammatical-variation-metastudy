@@ -437,3 +437,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Flow:** Removed "it's worth asking" (throat-clearer).
 - **Rationale:** Aligns with author's institutional context (U of T) and `style-guide.md` preference for precision.
 - **Evidence:** `main.tex` spelling/markup updates.
+
+### 2026-01-10 — Plain Style Enforcement
+- **Topic:** Clarity and flow
+- **Decision:** Removing academic crutches.
+  - **Lists to Prose:** Converted "Selection (tested)" results list to narrative paragraph ("First... Second...").
+  - **Syntax:** "must first choose" → "first choose", "Note that" → Ø, "Furthermore" → "Also".
+- **Rationale:** House style prohibits "hackneyed academic connectives" and encourages narrative flow for argument sequences.
+- **Evidence:** `main.tex` prose refinements.

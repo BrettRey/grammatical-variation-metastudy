@@ -98,8 +98,12 @@ Gelman-style Bayesian reanalysis:
   - Hypophora: "Could the data distinguish... No." (Power limitation)
 - Applied strict house style:
   - Canadian/Oxford spelling (behaviour, modelling, centre, catalogue)
+  - Canadian/Oxford spelling (behaviour, modelling, centre, catalogue)
   - Semantic markup: `\olang{}` for object language examples
   - Removed throat-clearers ("it's worth asking")
+- Applied plain style prose:
+  - Converted bulleted lists to narrative paragraphs (Results)
+  - Replaced "must"/"Note that"/"Furthermore" with simpler alternatives.
 
 ## Connections to Other Work
 
