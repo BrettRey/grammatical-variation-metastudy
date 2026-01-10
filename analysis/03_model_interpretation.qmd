@@ -1,0 +1,134 @@
+---
+title: "Model Interpretation & Visualization"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(brms)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(here)
+```
+
+## Load Fits
+
+```{r}
+#| label: load-fits
+fit_regularizing_path <- here("analysis/fit_joint_regularizing.rds")
+fit_centered_path <- here("analysis/fit_joint_centered.rds")
+
+if (!file.exists(fit_regularizing_path) || !file.exists(fit_centered_path)) {
+  stop("Missing fitted model files. Run the joint model fits first.")
+}
+
+fit_regularizing <- readRDS(fit_regularizing_path)
+fit_centered <- readRDS(fit_centered_path)
+```
+
+## Fixed Effects (Primary: Regularizing Priors)
+
+```{r}
+#| label: fixed-effects-forest
+fe <- fixef(fit_regularizing)
+fe_df <- tibble(term = rownames(fe)) |>
+  bind_cols(as.data.frame(fe)) |>
+  mutate(
+    response = if_else(str_starts(term, "tested_"), "tested", "foundcond"),
+    term = str_replace(term, "^(tested_|foundcond_)", ""),
+    or = exp(Estimate),
+    or_low = exp(Q2.5),
+    or_high = exp(Q97.5)
+  )
+
+ggplot(fe_df, aes(x = term, y = or, ymin = or_low, ymax = or_high)) +
+  geom_pointrange() +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "gray50") +
+  coord_flip() +
+  facet_wrap(~ response, scales = "free_y") +
+  labs(title = "Fixed Effects (Regularizing Priors)",
+       y = "Odds ratio (median, 95% CI)",
+       x = NULL)
+```
+
+## Predicted Probabilities by Variation Type & Journal
+
+```{r}
+#| label: predicted-probabilities
+df <- read_csv(here("analysis/gramm_var_prepped.csv"), show_col_types = FALSE) |>
+  mutate(
+    year_z = as.numeric(scale(year)),
+    variation_type_recode = factor(variation_type_recode),
+    journal = factor(journal)
+  )
+
+newdata <- expand_grid(
+  variation_type_recode = levels(df$variation_type_recode),
+  journal = levels(df$journal),
+  year_z = 0
+)
+
+pred_tested <- fitted(
+  fit_regularizing,
+  newdata = newdata,
+  re_formula = NA,
+  resp = "tested",
+  summary = TRUE
+) |> as.data.frame()
+
+pred_found <- fitted(
+  fit_regularizing,
+  newdata = newdata,
+  re_formula = NA,
+  resp = "foundcond",
+  summary = TRUE
+) |> as.data.frame()
+
+preds <- bind_cols(newdata, pred_tested) |>
+  mutate(response = "tested") |>
+  bind_rows(
+    bind_cols(newdata, pred_found) |>
+      mutate(response = "foundcond")
+  )
+
+ggplot(preds, aes(x = variation_type_recode, y = Estimate, color = journal)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5),
+                width = 0.1,
+                position = position_dodge(width = 0.3)) +
+  facet_wrap(~ response, ncol = 1) +
+  labs(title = "Predicted Probabilities by Variation Type & Journal (Regularizing Priors)",
+       y = "Predicted probability",
+       x = NULL,
+       color = "Journal")
+```
+
+## Sensitivity Check (Centered Priors)
+
+```{r}
+#| label: sensitivity-compare
+fe_reg <- fixef(fit_regularizing)
+fe_cen <- fixef(fit_centered)
+
+tbl <- tibble(
+  term = rownames(fe_reg),
+  regularizing = fe_reg[, "Estimate"],
+  centered = fe_cen[, "Estimate"]
+) |>
+  mutate(diff = centered - regularizing)
+
+tbl
+```

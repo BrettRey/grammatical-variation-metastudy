@@ -44,6 +44,7 @@ Gelman-style Bayesian reanalysis:
 - Outlined analysis structure
 - Rendered `analysis/01_data_prep.qmd` and generated `analysis/gramm_var_prepped.csv`
 - Fit joint models (regularizing + centered priors); centered model refit with higher adapt_delta
+- Added interpretation/visualization notebook and OR summary table
 
 ## Connections to Other Work
 

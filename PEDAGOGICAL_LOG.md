@@ -172,6 +172,14 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/fit_joint_centered.rds` (updated).
 - **Follow-ups:** Compare posterior summaries across priors and proceed to reporting.
 
+### 2026-01-10 — Interpretation & Visualization Notebook
+- **Topic:** Results communication
+- **Decision:** Add a dedicated interpretation/visualization notebook and an OR summary table.
+- **Rationale:** Separate model interpretation from EDA and preserve a clean results narrative.
+- **Alternatives:** Keep all visuals in `analysis/02_eda.qmd`.
+- **Evidence:** `analysis/03_model_interpretation.qmd`, `analysis/joint_model_or_table.md`.
+- **Follow-ups:** Add posterior predictive checks and domain-specific plots if needed.
+
 ### 2026-01-10 — Forking Paths Log Added
 - **Topic:** Decision transparency
 - **Decision:** Add a dedicated forking-paths log to track analytic choices and alternatives.
