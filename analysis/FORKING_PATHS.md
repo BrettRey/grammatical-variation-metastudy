@@ -105,3 +105,12 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 - **Impact:** Primary model shifts from brms to Stan; requires explicit diagnostics and posterior summaries.  
 - **Evidence/Link:** `stan/selection_model.stan`, `analysis/05_custom_stan.qmd`  
 - **Date:** 2026-01-10  
+
+### brms two-stage comparison to custom Stan
+- **Status:** decided  
+- **Options:** compare against brms joint model; no comparison; brms two-stage baseline  
+- **Chosen:** brms two-stage baseline  
+- **Rationale:** Provides a transparent baseline using the same predictors without the missing-data issue.  
+- **Impact:** Enables side-by-side OR table for robustness checks.  
+- **Evidence/Link:** `analysis/06_model_comparison.qmd`, `analysis/model_comparison_or_table.md`  
+- **Date:** 2026-01-10  

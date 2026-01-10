@@ -251,3 +251,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Simplify random effects; reparameterize; lower adapt_delta.
 - **Evidence:** `analysis/05_custom_stan.qmd`, `analysis/custom_stan_or_table.md`.
 - **Follow-ups:** Re-check diagnostics and update interpretation tables.
+
+### 2026-01-10 — PPCs and Model Comparison
+- **Topic:** Validation and cross-model comparison
+- **Decision:** Add posterior predictive checks for the custom Stan model and fit brms two-stage models for side-by-side comparison.
+- **Rationale:** Validate fit on observed rates and confirm robustness of fixed-effect directions across modeling approaches.
+- **Alternatives:** Compare only against prior brms joint model (which dropped untested rows).
+- **Evidence:** `analysis/05_custom_stan.qmd`, `analysis/06_model_comparison.qmd`, `analysis/model_comparison_or_table.md`.
+- **Follow-ups:** Use comparison table in the results narrative and discussion.

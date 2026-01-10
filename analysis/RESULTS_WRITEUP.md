@@ -1,38 +1,40 @@
 # Results Write-Up Scaffold
 
 ## Results Overview
-- Baseline probabilities for both testing and finding variation are high, with little evidence of strong covariate effects.
-- Most uncertainty concentrates in sparse categories (especially variation type = order).
-- Fixed-covariate and marginal predictions tell the same qualitative story.
+- The custom Stan joint selection model shows clear structure in **testing** (journal, variation type, and year), but **found | tested** effects remain weak and uncertain.
+- LVC studies are less likely to test variables than JSlx, and realization variables are more likely to be tested than order variables.
+- Uncertainty concentrates in sparse categories (especially variation type = order and perception domain).
 
 ## Model Fit & Calibration
-- Joint selection/outcome model fit without major pathologies after tightening priors.
-- Posterior predictive checks show plausible distributions but limited separation by covariates.
-- Random effects capture heterogeneity without overturning the fixed-effects story.
+- Custom Stan joint model with correlated random intercepts fits without divergences; most R-hat values are ~1.01 or lower after the extended run.
+- Posterior predictive checks on tested and found rates align with observed rates.
+- Random effects capture heterogeneity without reversing the fixed-effects pattern in testing.
 
 ## Fixed Effects (Odds Ratios)
-- Slopes for year, journal, and variation type cluster near OR ≈ 1 with 95% intervals spanning 1.
-- No consistent evidence of time trends in testing or finding variation.
-- Journal differences (LVC vs JSlx) are small relative to uncertainty.
+- **Tested stage:** journal LVC < 1 (lower testing), realization > 1 (higher testing), and year_z > 1 (increasing testing over time); order vs both remains uncertain.
+- **Found stage:** all covariate effects have wide intervals spanning 1; no strong evidence for systematic differences once tested.
 
-## Predicted Probabilities
-- Population-level predictions are very high for both tested and foundcond across all categories.
-- Marginal predictions (observed covariates + random effects) widen intervals slightly but preserve overlap.
-- Order-type predictions remain the least precise, reflecting sparse data.
+## Predicted Probabilities / Rates
+- Model-implied tested and found rates are high and align with observed rates in PPCs.
+- The tested-vs-found asymmetry persists: selection effects are more pronounced than outcome effects.
 
 ## Sensitivity to Priors
-- Regularizing vs centered priors produce similar fixed-effect estimates and predictive patterns.
-- Intercepts shift modestly, but covariate effects remain weak under both priors.
+- Regularizing priors are retained in the Stan model; earlier brms-centered priors showed similar qualitative directions for fixed effects.
+
+## Model Comparison (Stan vs brms Two-Stage)
+- Fixed-effect directions are consistent across the custom Stan joint model and the brms two-stage fits.
+- Testing effects (journal, realization, year) are especially stable across approaches; outcome effects remain weak in both.
+- Intercept magnitudes differ modestly, but substantive conclusions are unchanged.
 
 ## Draft Narrative Paragraph (Model Interpretation)
-- Paragraph draft: The fixed‑covariate predictions at mean year and zero random effects show uniformly high testing and finding probabilities, with substantial overlap across journal and variation type. When we marginalize over the observed covariates and include random effects, the intervals widen to reflect heterogeneity, but the overall pattern is unchanged. This indicates that the “high baseline + weak covariate signals” story is not an artifact of conditioning on year_z = 0 or suppressing group‑level variation; the data simply do not support strong systematic differences by journal or variation type.
+- Paragraph draft: The custom Stan joint selection model shows that *whether* a variable is tested depends on journal, variation type, and time: LVC papers are less likely to test variables, realization variables are more likely to be tested, and testing increases over time. Once variables are tested, however, the evidence for social-significance findings does not strongly depend on these covariates; all outcome effects have wide intervals spanning no effect. Posterior predictive checks on tested and found rates align with the observed rates, suggesting the model captures the main selection structure without inventing systematic outcome differences.
 
 ## Limitations & Caveats
 - Order-type data are sparse and concentrated in one journal, limiting interpretability.
 - Selection effects dominate the observable variation; outcome effects are secondary.
-- Domain-specific selection models remain exploratory and are not yet fit.
+- Domain-specific models are two-stage (selection then outcome) because joint models drop untested rows; perception remains very sparse.
 
 ## Next Analyses (If Needed)
-- Fit domain-specific selection models (production, perception, metalinguistic) for robustness.
+- Compare custom Stan joint estimates to brms two-stage fits (side-by-side table).
 - Consider alternative temporal structures if year effects are hypothesized (e.g., splines).
 - Explore sensitivity to collapsing or re‑coding variation type categories.

@@ -5,7 +5,7 @@
 
 ## Current State
 
-Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated. Domain-specific two-stage models fit and summarized. A custom Stan joint selection model has been implemented and fit; diagnostics pending.
+Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated. Domain-specific two-stage models fit and summarized. A custom Stan joint selection model has been implemented, rerun with more iterations, and checked via PPCs and diagnostics. brms two-stage comparison tables are in place.
 
 ## Origin
 
@@ -34,7 +34,8 @@ Gelman-style Bayesian reanalysis:
 - [x] Prototype selection model in brms (two-stage, domain-specific)
 - [x] Prototype outcome model (domain-specific)
 - [x] Revisit overall joint model with a structure that keeps untested rows (custom Stan)
-- [x] Check custom Stan diagnostics (minor R-hat > 1.01 for some params)
+- [x] Check custom Stan diagnostics (improved after extended run)
+- [x] Add PPCs and brms two-stage comparison table
 
 ## Session Log
 

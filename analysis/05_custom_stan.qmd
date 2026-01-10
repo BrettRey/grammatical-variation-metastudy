@@ -17,9 +17,11 @@ execute:
 #| label: setup
 library(dplyr)
 library(readr)
+library(tidyr)
 library(here)
 library(rstan)
 library(posterior)
+library(ggplot2)
 
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
@@ -113,6 +115,74 @@ diag_summary <- diagnostics |>
   )
 
 diag_summary
+```
+
+## Posterior Predictive Checks
+
+```{r}
+#| label: posterior-predictive
+set.seed(123)
+draws <- rstan::extract(
+  fit,
+  pars = c("alpha_s", "alpha_o", "beta_s", "beta_o",
+           "u_paper", "u_author", "u_language")
+)
+
+n_draws <- length(draws$alpha_s)
+draw_idx <- sample(seq_len(n_draws), size = min(200, n_draws))
+
+inv_logit <- function(x) 1 / (1 + exp(-x))
+
+simulate_rates <- function(i) {
+  eta_s <- draws$alpha_s[i] +
+    X %*% draws$beta_s[i, ] +
+    draws$u_paper[i, 1, stan_data$paper_id] +
+    draws$u_author[i, 1, stan_data$author_id] +
+    draws$u_language[i, 1, stan_data$language_id]
+
+  eta_o <- draws$alpha_o[i] +
+    X %*% draws$beta_o[i, ] +
+    draws$u_paper[i, 2, stan_data$paper_id] +
+    draws$u_author[i, 2, stan_data$author_id] +
+    draws$u_language[i, 2, stan_data$language_id]
+
+  p_s <- inv_logit(eta_s)
+  p_o <- inv_logit(eta_o)
+
+  tested_rep <- rbinom(stan_data$N, 1, p_s)
+  found_rep <- rbinom(stan_data$N, 1, p_o)
+
+  tested_rate <- mean(tested_rep)
+  found_rate <- ifelse(sum(tested_rep) > 0,
+                       mean(found_rep[tested_rep == 1L]),
+                       NA_real_)
+  c(tested_rate = tested_rate, found_rate = found_rate)
+}
+
+rates <- t(vapply(draw_idx, simulate_rates, numeric(2)))
+rates_df <- as_tibble(rates)
+
+obs_tested <- mean(stan_data$tested)
+obs_found <- mean(stan_data$found[stan_data$tested == 1L])
+
+rates_long <- rates_df |>
+  pivot_longer(cols = everything(), names_to = "metric", values_to = "rate")
+
+obs_df <- tibble(
+  metric = c("tested_rate", "found_rate"),
+  observed = c(obs_tested, obs_found)
+)
+
+ggplot(rates_long, aes(x = rate)) +
+  geom_density(fill = "#9ecae1", alpha = 0.6) +
+  geom_vline(data = obs_df, aes(xintercept = observed), color = "#08306b", linewidth = 1) +
+  facet_wrap(~ metric, scales = "free") +
+  labs(
+    title = "Posterior Predictive Checks (Rates)",
+    subtitle = "Vertical line = observed rate",
+    x = "Rate",
+    y = "Density"
+  )
 ```
 
 ## Fixed Effects (Odds Ratios)

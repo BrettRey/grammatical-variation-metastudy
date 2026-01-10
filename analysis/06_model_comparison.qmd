@@ -1,0 +1,196 @@
+---
+title: "Model Comparison: Custom Stan vs brms Two-Stage"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(dplyr)
+library(readr)
+library(tibble)
+library(stringr)
+library(here)
+library(brms)
+library(posterior)
+```
+
+## Load Data
+
+```{r}
+#| label: load-data
+raw <- read_csv(here("analysis/gramm_var_prepped.csv"), show_col_types = FALSE) |>
+  mutate(
+    year_z = as.numeric(scale(year)),
+    variation_type_recode = factor(variation_type_recode),
+    journal = factor(journal),
+    paper_id = factor(paper_id),
+    author_id = factor(author_id),
+    language_id = factor(language_id),
+    tested = as.integer(tested),
+    found = as.integer(found)
+  )
+```
+
+## Fit brms Two-Stage Models (Overall)
+
+```{r}
+#| label: brms-two-stage
+priors <- c(
+  set_prior("normal(0, 1.0)", class = "Intercept"),
+  set_prior("normal(0, 0.5)", class = "b"),
+  set_prior("exponential(3)", class = "sd")
+)
+
+fit_path <- here("analysis/fit_brms_twostage.rds")
+
+if (file.exists(fit_path)) {
+  fit_brms <- readRDS(fit_path)
+} else {
+  tested_formula <- tested ~ 1 + variation_type_recode + journal + year_z +
+    (1 | paper_id) + (1 | author_id) + (1 | language_id)
+
+  found_data <- raw |> filter(tested == 1L)
+  found_formula <- found ~ 1 + variation_type_recode + journal + year_z +
+    (1 | paper_id) + (1 | author_id) + (1 | language_id)
+
+  fit_tested <- brm(
+    tested_formula,
+    data = raw,
+    family = bernoulli(),
+    prior = priors,
+    chains = 4, iter = 2000, warmup = 1000, cores = 2, seed = 123,
+    control = list(adapt_delta = 0.99, max_treedepth = 12)
+  )
+
+  fit_found <- brm(
+    found_formula,
+    data = found_data,
+    family = bernoulli(),
+    prior = priors,
+    chains = 4, iter = 2000, warmup = 1000, cores = 2, seed = 123,
+    control = list(adapt_delta = 0.99, max_treedepth = 12)
+  )
+
+  fit_brms <- list(tested = fit_tested, found = fit_found)
+  saveRDS(fit_brms, fit_path)
+}
+```
+
+## Summarize ORs (brms)
+
+```{r}
+#| label: brms-or
+summarize_brms <- function(fit, response) {
+  draws <- posterior::as_draws_df(fit)
+  cols <- grep("^b_", names(draws), value = TRUE)
+  tibble(term = cols) |>
+    mutate(
+      median = sapply(cols, function(cn) median(exp(draws[[cn]]))),
+      q2.5 = sapply(cols, function(cn) quantile(exp(draws[[cn]]), 0.025)),
+      q97.5 = sapply(cols, function(cn) quantile(exp(draws[[cn]]), 0.975))
+    ) |>
+    mutate(
+      term = str_replace(term, "^b_", ""),
+      response = response
+    )
+}
+
+brms_or <- bind_rows(
+  summarize_brms(fit_brms$tested, "tested"),
+  summarize_brms(fit_brms$found, "foundcond")
+) |>
+  mutate(term = recode(term, Intercept = "Intercept")) |>
+  arrange(response, term)
+
+brms_or
+```
+
+```{r}
+#| label: brms-or-write
+write_lines("# brms Two-Stage OR Table\n", here("analysis/brms_twostage_or_table.md"))
+
+brms_table_out <- brms_or |>
+  mutate(estimate = sprintf("%.2f [%.2f, %.2f]", median, q2.5, q97.5)) |>
+  select(response, term, estimate) |>
+  knitr::kable(format = "pipe")
+
+write_lines(brms_table_out, here("analysis/brms_twostage_or_table.md"), append = TRUE)
+```
+
+## Summarize ORs (Custom Stan)
+
+```{r}
+#| label: stan-or
+library(rstan)
+
+fit_stan <- readRDS(here("analysis/fit_custom_stan.rds"))
+stan_draws <- posterior::as_draws_df(fit_stan)
+
+X <- model.matrix(~ variation_type_recode + journal + year_z, data = raw)
+coef_names <- colnames(X)[-1]
+
+summarize_stan <- function(prefix, response) {
+  idx <- paste0(prefix, "[", seq_along(coef_names), "]")
+  tibble(term = coef_names) |>
+    mutate(
+      median = sapply(idx, function(cn) median(exp(stan_draws[[cn]]))),
+      q2.5 = sapply(idx, function(cn) quantile(exp(stan_draws[[cn]]), 0.025)),
+      q97.5 = sapply(idx, function(cn) quantile(exp(stan_draws[[cn]]), 0.975)),
+      response = response
+    )
+}
+
+intercepts <- tibble(
+  term = "Intercept",
+  response = c("tested", "foundcond"),
+  median = c(median(exp(stan_draws$alpha_s)), median(exp(stan_draws$alpha_o))),
+  q2.5 = c(quantile(exp(stan_draws$alpha_s), 0.025), quantile(exp(stan_draws$alpha_o), 0.025)),
+  q97.5 = c(quantile(exp(stan_draws$alpha_s), 0.975), quantile(exp(stan_draws$alpha_o), 0.975))
+)
+
+stan_or <- bind_rows(
+  intercepts,
+  summarize_stan("beta_s", "tested"),
+  summarize_stan("beta_o", "foundcond")
+) |>
+  arrange(response, term)
+
+stan_or
+```
+
+## Side-by-Side Comparison
+
+```{r}
+#| label: comparison
+comparison <- stan_or |>
+  mutate(stan_estimate = sprintf("%.2f [%.2f, %.2f]", median, q2.5, q97.5)) |>
+  select(response, term, stan_estimate) |>
+  left_join(
+    brms_or |>
+      mutate(brms_estimate = sprintf("%.2f [%.2f, %.2f]", median, q2.5, q97.5)) |>
+      select(response, term, brms_estimate),
+    by = c("response", "term")
+  ) |>
+  arrange(response, term)
+
+comparison
+```
+
+```{r}
+#| label: comparison-write
+write_lines("# Custom Stan vs brms Two-Stage OR Comparison\n", here("analysis/model_comparison_or_table.md"))
+
+comparison |>
+  knitr::kable(format = "pipe") |>
+  write_lines(here("analysis/model_comparison_or_table.md"), append = TRUE)
+```
