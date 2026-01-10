@@ -72,6 +72,59 @@ tibble(
   mutate(found_rate = found / tested)
 ```
 
+## EDA Summary (Snapshot)
+
+```{r}
+#| label: eda-summary-values
+total_n <- nrow(gramm_var)
+tested_n <- sum(gramm_var$tested)
+found_n <- sum(gramm_var$found & gramm_var$tested)
+tested_rate <- round(100 * tested_n / total_n, 1)
+found_rate <- round(100 * found_n / tested_n, 1)
+
+prod_tested <- sum(gramm_var$prod_tested)
+prod_found <- sum(gramm_var$prod_found)
+perc_tested <- sum(gramm_var$perc_tested)
+perc_found <- sum(gramm_var$perc_found)
+meta_tested <- sum(gramm_var$meta_tested)
+meta_found <- sum(gramm_var$meta_found)
+
+type_counts <- gramm_var |>
+  count(variation_type_recode)
+
+tested_rates <- gramm_var |>
+  group_by(variation_type_recode) |>
+  summarize(rate = round(100 * mean(tested), 1), n = n())
+
+found_rates <- gramm_var |>
+  filter(tested == 1L) |>
+  group_by(variation_type_recode) |>
+  summarize(rate = round(100 * mean(found), 1), tested_n = n())
+
+order_lvc <- gramm_var |>
+  filter(variation_type_recode == "order", journal == "LVC") |>
+  nrow()
+order_jslx <- gramm_var |>
+  filter(variation_type_recode == "order", journal == "JSlx") |>
+  nrow()
+
+perc_realization <- gramm_var |>
+  filter(variation_type_recode == "realization") |>
+  summarize(tested = sum(perc_tested), found = sum(perc_found))
+```
+
+- Total rows: `r total_n` (note: differs from the expected 426 in project notes).
+- Overall testing: `r tested_n` tested (`r tested_rate`%); `r found_n` found among tested (`r found_rate`%).
+- Domain coverage is highly imbalanced:
+  - Production: `r prod_tested` tested / `r prod_found` found
+  - Perception: `r perc_tested` tested / `r perc_found` found (all in realization variables)
+  - Metalinguistic: `r meta_tested` tested / `r meta_found` found
+- Variation type mix: realization `r type_counts$n[type_counts$variation_type_recode == "realization"]`, order `r type_counts$n[type_counts$variation_type_recode == "order"]`, both `r type_counts$n[type_counts$variation_type_recode == "both"]`.
+- Testing rates by type: realization `r tested_rates$rate[tested_rates$variation_type_recode == "realization"]`%, order `r tested_rates$rate[tested_rates$variation_type_recode == "order"]`%, both `r tested_rates$rate[tested_rates$variation_type_recode == "both"]`%.
+- Found rates by type (among tested): realization `r found_rates$rate[found_rates$variation_type_recode == "realization"]`%, order `r found_rates$rate[found_rates$variation_type_recode == "order"]`%, both `r found_rates$rate[found_rates$variation_type_recode == "both"]`%.
+- Journal confound: order variables are almost entirely LVC (`r order_lvc` LVC vs `r order_jslx` JSlx).
+- Interpretation note: most of the variation appears in **selection (tested vs not)** rather than in outcomes once tested.
+
 ## Joint Selection–Outcome Model Scaffold (Overall)
 
 ```{r}
