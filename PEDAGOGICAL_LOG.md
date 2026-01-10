@@ -348,3 +348,32 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `main.tex` §3.2 (Outcome).
 - **Follow-ups:** Consider a boxed pedagogical note if space allows.
 
+### 2026-01-10 — Round 2 Revisions: Mechanical Fixes
+- **Topic:** Manuscript clarity and precision
+- **Decision:** Apply 7 mechanical fixes: (1) classification consistency (realization/order/both as three levels), (2) journal years clarification, (3) year OR unit gloss (~decade), (4) first-author specification, (5) "selection into testing" language, (6) interaction coefficient interpretation, (7) mixed-effects analogy.
+- **Rationale:** Prevent predictable misreadings and tighten definitions.
+- **Evidence:** `main.tex` (§1.1, §2.2, §3.4).
+- **Follow-ups:** None; these are drop-in fixes.
+
+### 2026-01-10 — GIP Implications Subsection
+- **Topic:** Theoretical payoff
+- **Decision:** Add "Implications for the Grammatical Invisibility Principle" subsection to Discussion.
+- **Rationale:** Connect findings to the GIP debate. Conditional on testing, both realization and order variables succeed at comparable rates (88–94%), refuting one version of the GIP (that order variables *cannot* carry social meaning).
+- **Evidence:** `main.tex` §4.2.
+- **Follow-ups:** Consider citing GIP literature if space allows.
+
+### 2026-01-10 — Expanded M&R Engagement
+- **Topic:** Rapoport's rules structure
+- **Decision:** Expand "Relation to prior descriptive work" with explicit points of agreement, focused revision, and clarification that novelty is formalization rather than conceptual revision.
+- **Rationale:** Prevents "we did the same thing but Bayesian" reaction; acknowledges M&R's own discussion of selection while clarifying what the model adds.
+- **Evidence:** `main.tex` §4.3.
+- **Follow-ups:** None.
+
+### 2026-01-10 — Model Specification Appendix
+- **Topic:** Methods-oriented documentation
+- **Decision:** Add appendix with full generative model (likelihood, link functions, random effect structure, correlation specification, priors).
+- **Rationale:** For a methods-oriented paper, readers need the full specification to evaluate the contribution.
+- **Evidence:** `main.tex` Appendix A.
+- **Follow-ups:** Consider adding Stan code as supplementary material.
+
+
