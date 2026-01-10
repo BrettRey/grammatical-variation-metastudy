@@ -83,3 +83,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - Pareto-k thresholds and handling (e.g., `reloo`)
   - Comparisons to run (selection-only vs joint; linear vs smooth year)
   - Reporting template for LOO results and effective sample sizes
+
+### 2026-01-10 — Gelman-Style Checklist Added
+- **Topic:** Workflow discipline
+- **Decision:** Add a checklist emphasizing prior/posterior predictive checks, incremental complexity, and sensitivity analyses.
+- **Rationale:** Keep the analysis aligned with a “model-checking first” workflow.
+- **Alternatives:** Informal checks only.
+- **Evidence:** `analysis/00_analysis_plan.qmd` (Gelman-Style Workflow Checklist; Sensitivity Analyses).
+- **Follow-ups:** Update the checklist when we add the first fitted model.

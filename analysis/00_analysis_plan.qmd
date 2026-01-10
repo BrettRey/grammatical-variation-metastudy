@@ -126,6 +126,22 @@ Use weakly informative priors (regularizing, not subjective):
 - LOO-CV for model comparison, with Pareto-$k$ diagnostics (trigger `reloo` if needed)
 - Trace plots, $\hat{R}$, ESS
 
+## Gelman-Style Workflow Checklist
+
+1. **Prior predictive check** before any fitting (sanity on baseline rates and variability).
+2. **Fit the simplest joint model** that matches the research question.
+3. **Posterior predictive check** to validate fit to observed distributions.
+4. **Incremental complexity** only when simpler models misfit key patterns.
+5. **Model comparison with diagnostics** (LOO/ELPD + Pareto-$k$).
+6. **Sensitivity analysis** for coding choices and priors.
+
+## Sensitivity Analyses
+
+- **NA coding:** treat NA as `null` vs `not analyzed` vs missing (if data owner confirms).
+- **Year trend:** linear vs smooth.
+- **Selection structure:** joint vs two-stage.
+- **Prior scale:** tighter vs wider (e.g., `Normal(0, 0.7)` vs `Normal(0, 1.5)` for slopes).
+
 ## Timeline
 
 Not estimated (per portfolio conventions).
