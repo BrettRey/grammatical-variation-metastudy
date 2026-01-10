@@ -5,7 +5,7 @@
 - `upstream/` is a git submodule pointing to the original dataset/analysis; treat as read-only.
 - `stan/` is reserved for Stan model files as they are introduced.
 - `output/` is for generated tables, figures, and rendered artifacts.
-- Root docs: `CLAUDE.md` (project brief) and `STATUS.md` (progress log).
+- Root docs: `CLAUDE.md` (project brief), `STATUS.md` (progress log), and `PEDAGOGICAL_LOG.md` (teaching notes).
 
 ## Build, Test, and Development Commands
 No centralized build system is defined; render Quarto notebooks directly.
@@ -32,3 +32,4 @@ If cloning fresh, initialize submodules: `git submodule update --init --recursiv
 - Keep upstream data immutable; if you need modifications, write to `analysis/` or `output/` and document transformations in the notebook.
 - To sync upstream data: `git -C upstream pull --ff-only`, then commit the updated submodule pointer.
 - Update `STATUS.md` when you complete a milestone or change the analysis plan.
+- Update `PEDAGOGICAL_LOG.md` for notable decisions, tradeoffs, and instructive interactions.

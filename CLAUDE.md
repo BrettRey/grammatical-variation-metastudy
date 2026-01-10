@@ -68,6 +68,7 @@ grammatical-variation-metastudy/
 │   ├── 04_outcome_model.qmd
 │   └── 05_synthesis.qmd
 ├── stan/                        # Stan model files
+├── PEDAGOGICAL_LOG.md           # Teaching-oriented decisions and lessons
 ├── CLAUDE.md
 └── STATUS.md
 ```
@@ -84,3 +85,7 @@ Follow portfolio house style for any LaTeX output. R code should be tidyverse-st
 
 - Initialize after clone: `git submodule update --init --recursive`
 - Update upstream: `git -C upstream pull --ff-only`, then commit the submodule pointer in this repo.
+
+## Pedagogical Log
+
+Maintain `PEDAGOGICAL_LOG.md` with notable decisions, tradeoffs, and interaction notes that would help a new researcher learn the workflow.
