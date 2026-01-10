@@ -1,0 +1,156 @@
+---
+title: "Custom Stan Joint Selection Model"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(dplyr)
+library(readr)
+library(here)
+library(rstan)
+library(posterior)
+
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+## Prepare Data
+
+```{r}
+#| label: prepare-data
+raw <- read_csv(here("analysis/gramm_var_prepped.csv"), show_col_types = FALSE) |>
+  mutate(
+    year_z = as.numeric(scale(year)),
+    variation_type_recode = factor(variation_type_recode),
+    journal = factor(journal),
+    paper_id = factor(paper_id),
+    author_id = factor(author_id),
+    language_id = factor(language_id),
+    tested = as.integer(tested),
+    found = as.integer(found)
+  )
+
+X <- model.matrix(~ variation_type_recode + journal + year_z, data = raw)
+X <- X[, -1, drop = FALSE]  # drop intercept; handled separately in Stan
+
+stan_data <- list(
+  N = nrow(raw),
+  tested = raw$tested,
+  found = ifelse(raw$tested == 1L, raw$found, 0L),
+  K = ncol(X),
+  X = X,
+  J_paper = nlevels(raw$paper_id),
+  J_author = nlevels(raw$author_id),
+  J_language = nlevels(raw$language_id),
+  paper_id = as.integer(raw$paper_id),
+  author_id = as.integer(raw$author_id),
+  language_id = as.integer(raw$language_id)
+)
+```
+
+## Fit Model
+
+```{r}
+#| label: fit-model
+fit_path <- here("analysis/fit_custom_stan.rds")
+stan_path <- here("stan/selection_model.stan")
+
+if (file.exists(fit_path)) {
+  fit <- readRDS(fit_path)
+} else {
+  sm <- stan_model(stan_path)
+  fit <- sampling(
+    sm,
+    data = stan_data,
+    chains = 2,
+    iter = 2000,
+    warmup = 1000,
+    seed = 123,
+    control = list(adapt_delta = 0.99, max_treedepth = 12)
+  )
+  saveRDS(fit, fit_path)
+}
+```
+
+## Fixed Effects (Odds Ratios)
+
+```{r}
+#| label: fixed-effects
+as_draws <- posterior::as_draws_df(fit)
+
+coef_names <- colnames(X)
+
+summarize_beta <- function(prefix, response) {
+  idx <- paste0(prefix, "[", seq_along(coef_names), "]")
+  tibble(term = coef_names) |>
+    mutate(
+      median = sapply(idx, function(cn) median(exp(as_draws[[cn]]))),
+      q2.5 = sapply(idx, function(cn) quantile(exp(as_draws[[cn]]), 0.025)),
+      q97.5 = sapply(idx, function(cn) quantile(exp(as_draws[[cn]]), 0.975)),
+      response = response
+    )
+}
+
+intercepts <- tibble(
+  term = "Intercept",
+  response = c("tested", "foundcond"),
+  median = c(median(exp(as_draws$alpha_s)), median(exp(as_draws$alpha_o))),
+  q2.5 = c(quantile(exp(as_draws$alpha_s), 0.025), quantile(exp(as_draws$alpha_o), 0.025)),
+  q97.5 = c(quantile(exp(as_draws$alpha_s), 0.975), quantile(exp(as_draws$alpha_o), 0.975))
+)
+
+or_table <- bind_rows(
+  intercepts,
+  summarize_beta("beta_s", "tested"),
+  summarize_beta("beta_o", "foundcond")
+) |>
+  arrange(response, term)
+
+or_table
+```
+
+```{r}
+#| label: write-or-table
+write_lines("# Custom Stan Joint Model OR Table\n", here("analysis/custom_stan_or_table.md"))
+
+table_out <- or_table |>
+  mutate(estimate = sprintf("%.2f [%.2f, %.2f]", median, q2.5, q97.5)) |>
+  select(response, term, estimate) |>
+  knitr::kable(format = "pipe")
+
+write_lines(table_out, here("analysis/custom_stan_or_table.md"), append = TRUE)
+```
+
+## Random-Effect Correlations
+
+```{r}
+#| label: random-corr
+corr <- rstan::extract(fit, pars = c("Corr_paper", "Corr_author", "Corr_language"))
+
+summarize_corr <- function(arr, label) {
+  vals <- arr[, 1, 2]
+  tibble(
+    group = label,
+    median = median(vals),
+    q2.5 = quantile(vals, 0.025),
+    q97.5 = quantile(vals, 0.975)
+  )
+}
+
+bind_rows(
+  summarize_corr(corr$Corr_paper, "paper"),
+  summarize_corr(corr$Corr_author, "author"),
+  summarize_corr(corr$Corr_language, "language")
+)
+```

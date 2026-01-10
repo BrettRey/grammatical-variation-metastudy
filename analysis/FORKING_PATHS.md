@@ -96,3 +96,12 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 - **Impact:** Current joint-model results are provisional and should not be interpreted as selection effects.  
 - **Evidence/Link:** `analysis/fit_joint_regularizing.rds`, `analysis/00_analysis_plan.qmd`  
 - **Date:** 2026-01-10  
+
+### Custom Stan joint selection model
+- **Status:** decided  
+- **Options:** brms multivariate (complete-case); ordinal 0/1/2; two-stage; custom Stan selection model  
+- **Chosen:** custom Stan joint selection model with correlated random intercepts  
+- **Rationale:** preserve untested rows while modeling selection and outcome jointly.  
+- **Impact:** Primary model shifts from brms to Stan; requires explicit diagnostics and posterior summaries.  
+- **Evidence/Link:** `stan/selection_model.stan`, `analysis/05_custom_stan.qmd`  
+- **Date:** 2026-01-10  

@@ -227,3 +227,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Mention roles only in internal notes.
 - **Evidence:** `README.md`, `AGENTS.md`, `CLAUDE.md`.
 - **Follow-ups:** Keep role statements in sync across docs.
+
+### 2026-01-10 — Custom Stan Joint Selection Model
+- **Topic:** Primary selection–outcome model
+- **Decision:** Implement a custom Stan joint model with correlated random intercepts for paper/author/language and separate fixed effects for tested and found.
+- **Rationale:** brms multivariate models drop untested rows, so a custom Stan likelihood is required to keep the selection model identifiable.
+- **Alternatives:** Ordinal 0/1/2 outcome model; two-stage brms models.
+- **Evidence:** `stan/selection_model.stan`, `analysis/05_custom_stan.qmd`, `analysis/custom_stan_or_table.md`.
+- **Follow-ups:** Inspect divergences and diagnostics; decide whether to extend to random slopes or simplify.
