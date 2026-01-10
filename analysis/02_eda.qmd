@@ -125,7 +125,7 @@ perc_realization <- gramm_var |>
 - Journal confound: order variables are almost entirely LVC (`r order_lvc` LVC vs `r order_jslx` JSlx).
 - Interpretation note: most of the variation appears in **selection (tested vs not)** rather than in outcomes once tested.
 
-## Prior Sensitivity: Agnostic vs Data-Centered
+## Prior Sensitivity: Regularizing vs Data-Centered
 
 ```{r}
 #| label: prior-sensitivity
@@ -138,7 +138,7 @@ logit <- function(p) log(p / (1 - p))
 p_tested <- mean(gramm_var$tested)
 p_found <- mean(gramm_var$found[gramm_var$tested == 1L])
 
-priors_agnostic <- c(
+priors_regularizing <- c(
   set_prior("normal(0, 1.0)", class = "Intercept", resp = "tested"),
   set_prior("normal(0, 1.0)", class = "Intercept", resp = "foundcond"),
   set_prior("normal(0, 0.5)", class = "b", resp = "tested"),
@@ -166,11 +166,11 @@ bf_found <- bf(
     (1 | paper_id) + (1 | author_id) + (1 | language_id)
 )
 
-fit_prior_agnostic <- brm(
+fit_prior_regularizing <- brm(
   bf_tested + bf_found + set_rescor(FALSE),
   data = gramm_var,
   family = bernoulli(),
-  prior = priors_agnostic,
+  prior = priors_regularizing,
   sample_prior = "only",
   chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
 )
@@ -184,12 +184,12 @@ fit_prior_centered <- brm(
   chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
 )
 
-pp_check(fit_prior_agnostic, resp = "tested") +
-  ggtitle("Prior predictive: tested (agnostic priors)") +
+pp_check(fit_prior_regularizing, resp = "tested") +
+  ggtitle("Prior predictive: tested (regularizing priors)") +
   labs(subtitle = "y = observed, y_rep = simulated")
 
-pp_check(fit_prior_agnostic, resp = "foundcond") +
-  ggtitle("Prior predictive: found | tested (agnostic priors)") +
+pp_check(fit_prior_regularizing, resp = "foundcond") +
+  ggtitle("Prior predictive: found | tested (regularizing priors)") +
   labs(subtitle = "y = observed, y_rep = simulated")
 
 pp_check(fit_prior_centered, resp = "tested") +
@@ -207,23 +207,23 @@ summarize_prior_rates <- function(fit, resp) {
 }
 
 tibble(
-  prior = c("agnostic", "agnostic", "centered", "centered"),
+  prior = c("regularizing", "regularizing", "centered", "centered"),
   response = c("tested", "foundcond", "tested", "foundcond"),
   q05 = c(
-    summarize_prior_rates(fit_prior_agnostic, "tested")[1],
-    summarize_prior_rates(fit_prior_agnostic, "foundcond")[1],
+    summarize_prior_rates(fit_prior_regularizing, "tested")[1],
+    summarize_prior_rates(fit_prior_regularizing, "foundcond")[1],
     summarize_prior_rates(fit_prior_centered, "tested")[1],
     summarize_prior_rates(fit_prior_centered, "foundcond")[1]
   ),
   q50 = c(
-    summarize_prior_rates(fit_prior_agnostic, "tested")[2],
-    summarize_prior_rates(fit_prior_agnostic, "foundcond")[2],
+    summarize_prior_rates(fit_prior_regularizing, "tested")[2],
+    summarize_prior_rates(fit_prior_regularizing, "foundcond")[2],
     summarize_prior_rates(fit_prior_centered, "tested")[2],
     summarize_prior_rates(fit_prior_centered, "foundcond")[2]
   ),
   q95 = c(
-    summarize_prior_rates(fit_prior_agnostic, "tested")[3],
-    summarize_prior_rates(fit_prior_agnostic, "foundcond")[3],
+    summarize_prior_rates(fit_prior_regularizing, "tested")[3],
+    summarize_prior_rates(fit_prior_regularizing, "foundcond")[3],
     summarize_prior_rates(fit_prior_centered, "tested")[3],
     summarize_prior_rates(fit_prior_centered, "foundcond")[3]
   )

@@ -148,11 +148,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/02_eda.qmd`, `analysis/FORKING_PATHS.md`.
 - **Follow-ups:** Re-run prior predictive checks and confirm plausibility.
 
-### 2026-01-10 — Dual-Prior PPC (Agnostic + Centered)
+### 2026-01-10 — Dual-Prior PPC (Regularizing + Centered)
 - **Topic:** Sensitivity workflow
-- **Decision:** Run PPCs under both agnostic and data-centered intercept priors, and summarize implied rates.
-- **Rationale:** Aligns with Gelman-style robustness checks while keeping primary priors data-agnostic.
-- **Alternatives:** Use only agnostic priors.
+- **Decision:** Run PPCs under both regularizing and data-centered intercept priors, and summarize implied rates.
+- **Rationale:** Aligns with Gelman-style robustness checks while keeping primary priors regularizing (not fully agnostic).
+- **Alternatives:** Use only regularizing priors.
 - **Evidence:** `analysis/02_eda.qmd` (prior sensitivity section, quantile summary).
 - **Follow-ups:** Compare posterior results under both priors once fitting begins.
 
