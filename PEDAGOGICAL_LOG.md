@@ -188,6 +188,22 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/FORKING_PATHS.md`, `AGENTS.md`, `CLAUDE.md`.
 - **Follow-ups:** Update the log whenever a decision changes status.
 
+### 2026-01-10 — Manuscript Scaffolding for Variationists
+- **Topic:** Communication and pedagogy
+- **Decision:** Expand `main.tex` with variationist-friendly explanations of selection vs. outcome, PPCs, ORs, and CrIs, and document dual-prior PPCs.
+- **Rationale:** Lower the barrier for readers unfamiliar with Bayesian selection models and clarify what the model contributes beyond descriptive tallies.
+- **Alternatives:** Keep a terse statistical write-up; defer pedagogy to appendices.
+- **Evidence:** `main.tex` (Methods/Results/Discussion scaffolding; figure captions).
+- **Follow-ups:** Add a concise abstract and consider a short boxed glossary if space allows.
+
+### 2026-01-10 — Multi-Agent Coordination Note
+- **Topic:** Process coordination
+- **Decision:** Record that another model is active in the repository and coordinate edits to avoid conflicts.
+- **Rationale:** Parallel work can cause accidental overwrites or inconsistent states if not tracked.
+- **Alternatives:** Proceed without coordination notes.
+- **Evidence:** `STATUS.md` (Handoff Notes).
+- **Follow-ups:** Confirm ownership of any overlapping files before edits.
+
 ### 2026-01-10 — Marginal Predictions Plot
 - **Topic:** Interpretation scaffolding
 - **Decision:** Add a second plot that averages predictions over the observed covariate distribution and includes random effects.

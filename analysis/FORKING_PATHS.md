@@ -123,3 +123,31 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 - **Impact:** Sensitivity only; does not change primary modeling categories.  
 - **Evidence/Link:** `analysis/02_eda.qmd`  
 - **Date:** 2026-01-10  
+
+### Reporting dual-prior PPCs
+- **Status:** decided  
+- **Options:** report only regularizing priors; report both regularizing and centered-intercept PPCs  
+- **Chosen:** report both prior sets in Methods (briefly)  
+- **Rationale:** increases transparency about prior sensitivity without expanding the modeling scope.  
+- **Impact:** minor textual addition; no change to inference.  
+- **Evidence/Link:** `main.tex`  
+- **Date:** 2026-01-10  
+
+### Journal × variation-type interaction in selection stage
+- **Status:** decided  
+- **Options:** main effects only; interaction in both stages; interaction in selection only  
+- **Chosen:** interaction in selection stage only  
+- **Rationale:** Tests whether the selection gap differs by journal (institutional incentive story: JSlx requires social framing; LVC doesn't). Keeps outcome stage interpretable with main effects.  
+- **Impact:** Robustness check; if interaction is non-null, strengthens institutional-incentive interpretation.  
+- **Evidence/Link:** `stan/selection_model_extended.stan`, `analysis/07_extended_model.qmd`  
+- **Date:** 2026-01-10  
+
+### Year spline in selection stage
+- **Status:** decided  
+- **Options:** linear year; 2-knot piecewise-linear; smooth spline; decade bins  
+- **Chosen:** 2-knot piecewise-linear in selection stage as robustness check  
+- **Rationale:** Editorial norms and third-wave meaning work aren't obviously linear. Primary model retains linear year; extended model tests curvature.  
+- **Impact:** Robustness check; if spline coefficients diverge in direction, suggests period effects.  
+- **Evidence/Link:** `analysis/07_extended_model.qmd`  
+- **Date:** 2026-01-10  
+
