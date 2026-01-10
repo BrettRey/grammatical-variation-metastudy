@@ -275,3 +275,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/2026-mackenzie-robinson.pdf` (methods and coding sections).
 - **Notes:** Counts match the paper exactly (386 realization+both, 72 order+both; 290 tested realization, 31 tested order), confirming our recode.
 - **Follow-ups:** Consider sensitivity where “both” is included in both categories to mirror the paper’s reporting.
+
+### 2026-01-10 — Sensitivity: “Both” Category
+- **Topic:** Coding robustness
+- **Decision:** Add a sensitivity check that counts “both” variables in both realization and order categories.
+- **Rationale:** Aligns with the paper’s reporting convention and verifies that the testing-rate asymmetry persists.
+- **Alternatives:** Keep “both” as its own category only.
+- **Evidence:** `analysis/02_eda.qmd` (both-sensitivity section).
+- **Follow-ups:** Reference this check in the results narrative.

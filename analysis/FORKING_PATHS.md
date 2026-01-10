@@ -114,3 +114,12 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 - **Impact:** Enables side-by-side OR table for robustness checks.  
 - **Evidence/Link:** `analysis/06_model_comparison.qmd`, `analysis/model_comparison_or_table.md`  
 - **Date:** 2026-01-10  
+
+### Counting “both” in both categories
+- **Status:** decided  
+- **Options:** keep “both” separate; count “both” in both realization and order  
+- **Chosen:** add sensitivity check that counts “both” in both categories  
+- **Rationale:** matches the paper’s reporting convention and tests robustness of the testing-rate asymmetry.  
+- **Impact:** Sensitivity only; does not change primary modeling categories.  
+- **Evidence/Link:** `analysis/02_eda.qmd`  
+- **Date:** 2026-01-10  

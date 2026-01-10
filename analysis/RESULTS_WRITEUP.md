@@ -21,6 +21,9 @@
 ## Sensitivity to Priors
 - Regularizing priors are retained in the Stan model; earlier brms-centered priors showed similar qualitative directions for fixed effects.
 
+## Sensitivity to Coding (Both Category)
+- Counting “both” variables in both realization and order categories reproduces the same testing-rate asymmetry (order lower), matching the paper’s reporting convention.
+
 ## Model Comparison (Stan vs brms Two-Stage)
 - Fixed-effect directions are consistent across the custom Stan joint model and the brms two-stage fits.
 - Testing effects (journal, realization, year) are especially stable across approaches; outcome effects remain weak in both.

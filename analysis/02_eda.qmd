@@ -125,6 +125,38 @@ perc_realization <- gramm_var |>
 - Journal confound: order variables are almost entirely LVC (`r order_lvc` LVC vs `r order_jslx` JSlx).
 - Interpretation note: most of the variation appears in **selection (tested vs not)** rather than in outcomes once tested.
 
+## Sensitivity: Counting “Both” in Both Categories
+
+```{r}
+#| label: both-sensitivity
+both_sensitivity <- gramm_var |>
+  mutate(
+    is_realization = variation_type_recode %in% c("realization", "both"),
+    is_order = variation_type_recode %in% c("order", "both")
+  )
+
+summarize_type <- function(flag) {
+  type_df <- both_sensitivity |>
+    filter(.data[[flag]])
+
+  tibble(
+    n = nrow(type_df),
+    tested_n = sum(type_df$tested),
+    tested_rate = mean(type_df$tested),
+    found_n = sum(type_df$found & type_df$tested),
+    found_rate = mean(type_df$found[type_df$tested == 1L])
+  )
+}
+
+tibble(
+  type = c("realization+both", "order+both"),
+  summarize_type("is_realization"),
+  summarize_type("is_order")
+)
+```
+
+This mirrors the paper’s reporting convention by letting “both” count in each category; the overall pattern (lower testing for order) remains.
+
 ## Prior Sensitivity: Regularizing vs Data-Centered
 
 ```{r}
