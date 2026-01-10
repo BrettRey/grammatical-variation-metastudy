@@ -87,6 +87,7 @@ Gelman-style Bayesian reanalysis:
   - Intro: Dative alternation example (humans not just variables)
   - Interpretation: Predictive implications over "CrI excludes 1"
   - Discussion: Capacity vs. Research Filter distinction; Causal pathways note
+- Refined opening sentence: "Sociolinguistic theory has long debated" (avoids implying high testing frequency).
 
 ## Connections to Other Work
 
