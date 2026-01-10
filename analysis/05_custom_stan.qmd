@@ -185,6 +185,157 @@ ggplot(rates_long, aes(x = rate)) +
   )
 ```
 
+## Stratified PPCs (Journal, Variation Type)
+
+```{r}
+#| label: stratified-ppc
+group_defs <- list(
+  journal = levels(raw$journal),
+  variation_type_recode = levels(raw$variation_type_recode)
+)
+
+build_groups <- function(df, var) {
+  df |> mutate(group = .data[[var]], group_var = var)
+}
+
+grouped_raw <- bind_rows(
+  build_groups(raw, "journal"),
+  build_groups(raw, "variation_type_recode")
+)
+
+group_levels <- grouped_raw |>
+  distinct(group_var, group)
+
+obs_group_rates <- grouped_raw |>
+  group_by(group_var, group) |>
+  summarize(
+    tested_rate = mean(tested),
+    found_rate = mean(found[tested == 1L]),
+    .groups = "drop"
+  )
+
+simulate_group_rates <- function(i) {
+  eta_s <- draws$alpha_s[i] +
+    X %*% draws$beta_s[i, ] +
+    draws$u_paper[i, 1, stan_data$paper_id] +
+    draws$u_author[i, 1, stan_data$author_id] +
+    draws$u_language[i, 1, stan_data$language_id]
+
+  eta_o <- draws$alpha_o[i] +
+    X %*% draws$beta_o[i, ] +
+    draws$u_paper[i, 2, stan_data$paper_id] +
+    draws$u_author[i, 2, stan_data$author_id] +
+    draws$u_language[i, 2, stan_data$language_id]
+
+  p_s <- inv_logit(eta_s)
+  p_o <- inv_logit(eta_o)
+
+  tested_rep <- rbinom(stan_data$N, 1, p_s)
+  found_rep <- rbinom(stan_data$N, 1, p_o)
+
+  sim_df <- raw |>
+    mutate(
+      tested_rep = tested_rep,
+      found_rep = found_rep
+    )
+
+  sim_grouped <- bind_rows(
+    build_groups(sim_df, "journal"),
+    build_groups(sim_df, "variation_type_recode")
+  )
+
+  sim_grouped |>
+    group_by(group_var, group) |>
+    summarize(
+      tested_rate = mean(tested_rep),
+      found_rate = mean(found_rep[tested_rep == 1L]),
+      .groups = "drop"
+    )
+}
+
+sim_group_rates <- lapply(draw_idx, simulate_group_rates)
+sim_group_rates_df <- bind_rows(sim_group_rates, .id = "draw") |>
+  pivot_longer(cols = c(tested_rate, found_rate),
+               names_to = "metric",
+               values_to = "rate")
+
+obs_group_long <- obs_group_rates |>
+  pivot_longer(cols = c(tested_rate, found_rate),
+               names_to = "metric",
+               values_to = "observed")
+
+ppc_plot <- sim_group_rates_df |>
+  left_join(obs_group_long, by = c("group_var", "group", "metric")) |>
+  ggplot(aes(x = rate)) +
+  geom_density(fill = "#c7e9c0", alpha = 0.6) +
+  geom_vline(aes(xintercept = observed), color = "#006d2c", linewidth = 0.8) +
+  facet_grid(metric ~ group_var, scales = "free") +
+  labs(
+    title = "Stratified Posterior Predictive Checks",
+    subtitle = "Vertical line = observed rate (by journal and variation type)",
+    x = "Rate",
+    y = "Density"
+  )
+
+ppc_plot
+```
+
+## Probability-Scale Predictions (Population Level)
+
+```{r}
+#| label: probability-plots
+make_pred_grid <- function(df) {
+  expand_grid(
+    variation_type_recode = levels(df$variation_type_recode),
+    journal = levels(df$journal),
+    year_z = 0
+  ) |>
+    mutate(
+      variation_type_recode = factor(variation_type_recode, levels = levels(df$variation_type_recode)),
+      journal = factor(journal, levels = levels(df$journal))
+    )
+}
+
+pred_grid <- make_pred_grid(raw)
+X_pred <- model.matrix(~ variation_type_recode + journal + year_z, data = pred_grid)
+X_pred <- X_pred[, -1, drop = FALSE]
+
+pred_draws <- function(prefix_alpha, prefix_beta) {
+  alpha <- draws[[prefix_alpha]][draw_idx]
+  beta <- draws[[prefix_beta]][draw_idx, , drop = FALSE]
+  eta <- sapply(seq_along(alpha), function(i) alpha[i] + X_pred %*% beta[i, ])
+  inv_logit(eta)
+}
+
+pred_tested <- pred_draws("alpha_s", "beta_s")
+pred_found <- pred_draws("alpha_o", "beta_o")
+
+summarize_preds <- function(mat, label) {
+  tibble(
+    Estimate = apply(mat, 1, median),
+    Q2.5 = apply(mat, 1, quantile, 0.025),
+    Q97.5 = apply(mat, 1, quantile, 0.975),
+    response = label
+  )
+}
+
+preds <- bind_cols(pred_grid, summarize_preds(pred_tested, "tested")) |>
+  bind_rows(bind_cols(pred_grid, summarize_preds(pred_found, "foundcond")))
+
+ggplot(preds, aes(x = variation_type_recode, y = Estimate, color = journal)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5),
+                width = 0.1,
+                position = position_dodge(width = 0.3)) +
+  facet_wrap(~ response, ncol = 1) +
+  labs(
+    title = "Predicted Probabilities by Variation Type & Journal (Population Level)",
+    y = "Predicted probability",
+    x = NULL,
+    color = "Journal"
+  )
+```
+
 ## Fixed Effects (Odds Ratios)
 
 ```{r}

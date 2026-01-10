@@ -259,3 +259,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Compare only against prior brms joint model (which dropped untested rows).
 - **Evidence:** `analysis/05_custom_stan.qmd`, `analysis/06_model_comparison.qmd`, `analysis/model_comparison_or_table.md`.
 - **Follow-ups:** Use comparison table in the results narrative and discussion.
+
+### 2026-01-10 — Gelman-Style Checks and Presentation
+- **Topic:** Targeted PPCs + probability-scale interpretation
+- **Decision:** Add stratified PPCs (journal, variation type) and probability-scale predicted plots; draft a concise results paragraph tied to these checks.
+- **Rationale:** Emphasize model checking and substantive interpretation over further model tweaking.
+- **Alternatives:** Keep only global PPCs and OR tables.
+- **Evidence:** `analysis/05_custom_stan.qmd`, `analysis/RESULTS_WRITEUP.md`.
+- **Follow-ups:** Use these plots and paragraph in the manuscript draft.

@@ -29,6 +29,9 @@
 ## Draft Narrative Paragraph (Model Interpretation)
 - Paragraph draft: The custom Stan joint selection model shows that *whether* a variable is tested depends on journal, variation type, and time: LVC papers are less likely to test variables, realization variables are more likely to be tested, and testing increases over time. Once variables are tested, however, the evidence for social-significance findings does not strongly depend on these covariates; all outcome effects have wide intervals spanning no effect. Posterior predictive checks on tested and found rates align with the observed rates, suggesting the model captures the main selection structure without inventing systematic outcome differences.
 
+## Concise Results Paragraph (Gelman-Style)
+- Paragraph draft: Targeted posterior predictive checks show the custom Stan model reproduces observed testing and finding rates overall and by journal and variation type. On the probability scale, predicted testing differs by journal and variation type (LVC lower; realization higher), and increases over time, while found|tested remains broadly similar across groups with wide uncertainty. The brms two-stage baseline yields the same qualitative pattern, indicating the selection effects are robust to modeling approach while outcome effects remain weak and data-limited.
+
 ## Limitations & Caveats
 - Order-type data are sparse and concentrated in one journal, limiting interpretability.
 - Selection effects dominate the observable variation; outcome effects are secondary.
