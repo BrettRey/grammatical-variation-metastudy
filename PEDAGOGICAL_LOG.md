@@ -195,3 +195,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Show only fixed-covariate predictions or only group-level marginal means.
 - **Evidence:** `analysis/03_model_interpretation.qmd` (marginal predicted probabilities section).
 - **Follow-ups:** Compare marginal plot to fixed-covariate plot for sensitivity.
+
+### 2026-01-10 — Results Scaffold + Interpretation Paragraph
+- **Topic:** Results write-up preparation
+- **Decision:** Create a results write-up scaffold with section headings and bullet takeaways; store the fixed-vs-marginal interpretation paragraph in the scaffold.
+- **Rationale:** Keep a reusable narrative and keep the results structure separate from analysis notebooks.
+- **Alternatives:** Store the paragraph only in `analysis/03_model_interpretation.qmd`.
+- **Evidence:** `analysis/RESULTS_WRITEUP.md`.
+- **Follow-ups:** Expand bullets into prose when drafting the manuscript.
