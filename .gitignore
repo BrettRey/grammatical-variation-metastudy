@@ -1,3 +1,6 @@
+# Upstream data (clone separately)
+upstream/
+
 # R
 .Rhistory
 .RData
