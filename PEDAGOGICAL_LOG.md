@@ -313,3 +313,38 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Rationale:** Align the narrative with the LaTeX manuscript and style guide conventions.
 - **Evidence:** `main.tex`.
 - **Follow-ups:** Add figure/table environments and citations when ready.
+
+### 2026-01-10 — Prose Revisions from Methodological Feedback
+- **Topic:** Results framing and interpretation caveats
+- **Decision:** Add four prose revisions: (1) caveat that "found" = "reported as found" in §1.1, (2) explicit shrinkage interpretation for wide intervals in §3.2, (3) surface "both" sensitivity check earlier rather than in Robustness, (4) discipline rhetoric to focus on "the literature" rather than "human sociolinguistic capacity."
+- **Rationale:** Tightens the paper's claims and prevents overinterpretation. Addresses the fragile joints identified in methodological feedback.
+- **Alternatives:** Keep original framing; add only some caveats.
+- **Evidence:** `main.tex` (§1.1, §3.2, §3.4, §4.1).
+- **Follow-ups:** Review updated prose for consistency across markdown drafts.
+
+### 2026-01-10 — Journal × Variation-Type Interaction (Robustness)
+- **Topic:** Institutional selection differences
+- **Decision:** Add a journal × variation-type interaction to the selection stage as a robustness check.
+- **Rationale:** Tests whether JSlx shows a larger selection gap between realization and order than LVC (institutional-incentive hypothesis).
+- **Alternatives:** No interaction; interaction in both stages.
+- **Evidence:** `stan/selection_model_extended.stan`, `analysis/07_extended_model.qmd`, `analysis/extended_model_or_table.md`.
+- **Results:** Interaction terms have wide intervals spanning 1 (order:LVC OR ≈ 0.54, CrI 0.23–1.29; realization:LVC OR ≈ 0.66, CrI 0.30–1.47). Data do not clearly support differential selection by journal.
+- **Follow-ups:** Report in §3.4 (Robustness); do not over-interpret as null.
+
+### 2026-01-10 — Year Spline (Robustness)
+- **Topic:** Non-linear temporal trends
+- **Decision:** Add a 2-knot piecewise-linear year effect in the selection stage as a robustness check.
+- **Rationale:** Editorial norms and the rise of third-wave meaning work aren't obviously linear; tests whether the linear year assumption holds.
+- **Alternatives:** Smooth spline; decade bins; no robustness check.
+- **Evidence:** `analysis/07_extended_model.qmd`, `analysis/extended_model_or_table.md`.
+- **Results:** Spline coefficients point in the same direction (ORs 1.19, 1.72, 1.32; all intervals spanning 1), consistent with linearity rather than distinct period effects.
+- **Follow-ups:** Report in §3.4 (Robustness); primary model's linear assumption is supported.
+
+### 2026-01-10 — Interpreting Wide Intervals in Sparse Categories
+- **Topic:** Pedagogical framing of uncertainty
+- **Decision:** Explicitly state that wide credible intervals reflect data limitations, not absence of effect; partial pooling shrinks estimates toward the population mean.
+- **Rationale:** Readers often misread wide intervals as "no effect" rather than "data cannot resolve this." This is especially important for order variables and perception/metalinguistic domains.
+- **Alternatives:** Leave interpretation implicit.
+- **Evidence:** `main.tex` §3.2 (Outcome).
+- **Follow-ups:** Consider a boxed pedagogical note if space allows.
+
