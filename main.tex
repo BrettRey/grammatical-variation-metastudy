@@ -31,7 +31,7 @@ The goal is to separate two linked questions that variationists often discuss in
 
 Predictors in both stages are journal, variation type, and year (z-scored). Random intercepts for paper, author, and language account for clustering, and correlations across stages allow the same paper or author to influence both testing and findings. This structure estimates selection bias rather than treating it as unobserved noise.
 
-Priors are regularizing on the logit scale: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centers intercept priors on observed marginal rates while keeping slope and random-effect priors unchanged. Sampling uses four chains, \liningnums{4000} iterations (\liningnums{2000} warmup), $\text{adapt\_delta}=0.99$, and \texttt{max\_treedepth} \liningnums{12}. A brms (Bayesian regression models using Stan) two-stage baseline provides comparison.
+Priors are regularizing on the logit scale: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centers intercept priors on observed marginal rates while keeping slope and random-effect priors unchanged. Prior predictive checks are run under both prior sets to confirm that implied testing and finding rates are plausible. Sampling uses four chains, \liningnums{4000} iterations (\liningnums{2000} warmup), $\text{adapt\_delta}=0.99$, and \texttt{max\_treedepth} \liningnums{12}. A brms (Bayesian regression models using Stan) two-stage baseline provides comparison.
 
 \section{Results}
 
