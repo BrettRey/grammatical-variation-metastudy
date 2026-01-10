@@ -1,0 +1,20 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Quarto
+_site/
+.quarto/
+*_files/
+*.html
+
+# Stan
+*.rds
+
+# Output
+output/
+
+# OS
+.DS_Store

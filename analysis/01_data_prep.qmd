@@ -1,0 +1,141 @@
+---
+title: "Data Preparation"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: false
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(here)
+
+# Load data
+gramm_var <- read_csv(here("upstream/LVC_JSlx_gramm_var_database.csv"))
+```
+
+## Data Overview
+
+```{r}
+#| label: overview
+glimpse(gramm_var)
+```
+
+## Clustering Structure
+
+How many unique values for each potential grouping variable?
+
+```{r}
+#| label: clustering
+tibble(
+  Variable = c("Papers", "Authors", "Languages", "Varieties", "Journals", "Years"),
+  N = c(
+    n_distinct(gramm_var$title),
+    n_distinct(gramm_var$author.s.lastnames),
+    n_distinct(gramm_var$language),
+    n_distinct(gramm_var$variety),
+    n_distinct(gramm_var$journal),
+    n_distinct(gramm_var$year)
+  )
+)
+```
+
+## Outcome Distribution
+
+```{r}
+#| label: outcomes
+# Overall social significance
+gramm_var |> count(social.significance)
+
+# By domain
+gramm_var |> count(production)
+gramm_var |> count(perception)
+gramm_var |> count(metalinguistic.behaviors)
+```
+
+## Variation Type
+
+```{r}
+#| label: variation-type
+gramm_var |> count(variation.type)
+```
+
+## Recode Following Original
+
+```{r}
+#| label: recode
+gramm_var <- gramm_var |>
+  mutate(
+    variation_type_recode = case_when(
+      str_detect(variation.type, ", order") ~ "both",
+      str_detect(variation.type, "form") | str_detect(variation.type, "omission") ~ "realization",
+      .default = variation.type
+    )
+  )
+
+gramm_var |> count(variation_type_recode)
+```
+
+## Create Analysis Variables
+
+```{r}
+#| label: analysis-vars
+gramm_var <- gramm_var |>
+  mutate(
+    # Binary: was social significance tested at all?
+    tested = social.significance != "not analyzed",
+
+    # Binary: conditional on testing, was it found?
+    found = social.significance == "x",
+
+    # Ordinal outcome (0 = not analyzed, 1 = null, 2 = found)
+    outcome_ordinal = case_when(
+      social.significance == "not analyzed" ~ 0L,
+      social.significance == "null" ~ 1L,
+      social.significance == "x" ~ 2L
+    ),
+
+    # Same for each domain
+    prod_tested = production != "not analyzed",
+    prod_found = production == "x",
+    perc_tested = perception != "not analyzed",
+    perc_found = perception == "x",
+    meta_tested = metalinguistic.behaviors != "not analyzed",
+    meta_found = metalinguistic.behaviors == "x",
+
+    # IDs for multilevel modeling
+    paper_id = as.integer(factor(title)),
+    author_id = as.integer(factor(author.s.lastnames)),
+    language_id = as.integer(factor(language)),
+    variety_id = as.integer(factor(variety))
+  )
+```
+
+## Save Prepped Data
+
+```{r}
+#| label: save
+write_csv(gramm_var, here("analysis/gramm_var_prepped.csv"))
+```
+
+## Summary Statistics for Modeling
+
+```{r}
+#| label: model-summary
+cat("Total observations:", nrow(gramm_var), "\n")
+cat("Tested for social significance:", sum(gramm_var$tested),
+    "(", round(100*mean(gramm_var$tested), 1), "%)\n")
+cat("Found (of tested):", sum(gramm_var$found[gramm_var$tested]),
+    "(", round(100*mean(gramm_var$found[gramm_var$tested]), 1), "%)\n")
+cat("\nUnique papers:", n_distinct(gramm_var$paper_id), "\n")
+cat("Unique authors:", n_distinct(gramm_var$author_id), "\n")
+cat("Unique languages:", n_distinct(gramm_var$language_id), "\n")
+```

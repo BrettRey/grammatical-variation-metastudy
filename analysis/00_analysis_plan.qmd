@@ -1,0 +1,143 @@
+---
+title: "Analysis Plan: Grammatical Variation Meta-Study Reanalysis"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+---
+
+## Overview
+
+This document outlines a Gelman-style Bayesian reanalysis of MacKenzie & Robinson (2025), which catalogued grammatical variables from *Language Variation and Change* and *Journal of Sociolinguistics* through 2023.
+
+## Why Reanalyze?
+
+The original analysis uses simple proportions and contingency table tests (Fisher's exact, chi-squared). This approach:
+
+1. **Treats observations as independent** - ignoring clustering by paper, author, language
+2. **Binarizes outcomes** - collapsing "not analyzed / null / found" into binary comparisons
+3. **Conflates selection with outcomes** - doesn't model *why* some variables get tested
+
+A multilevel Bayesian approach addresses all three.
+
+## Data Structure
+
+```
+426 variable-variety combinations
+├── Clustered by paper (~N papers)
+├── Clustered by author(s) (~N unique author combinations)
+├── Clustered by language (~N languages)
+├── Clustered by journal (2 journals)
+└── Varying by year (1990s-2023)
+```
+
+**First task:** EDA to determine clustering counts.
+
+## Model Architecture
+
+### Model 1: Selection Model
+
+What predicts whether a variable gets tested for social significance?
+
+$$
+\text{logit}(P(\text{tested}_i)) = \alpha + \beta_{\text{type}} \cdot \text{variation\_type}_i + u_{\text{paper}[i]} + u_{\text{author}[i]} + u_{\text{language}[i]} + u_{\text{journal}[i]}
+$$
+
+Where $u$ terms are varying intercepts drawn from normal distributions.
+
+**Outcome:** Binary (tested vs not tested)
+
+**Predictors:**
+- Variation type (realization vs order vs both)
+- Journal
+- Year (possibly as smooth term)
+
+**Random effects:**
+- Paper
+- Author
+- Language
+
+### Model 2: Outcome Model (conditional on tested)
+
+Given that a variable was tested, what predicts finding social significance?
+
+**Option A: Binary**
+$$
+\text{logit}(P(\text{found}_i | \text{tested}_i)) = \alpha + \beta X_i + u_{\text{paper}[i]} + \ldots
+$$
+
+**Option B: Multinomial** (preferred)
+
+Model the full outcome: not analyzed / null / found
+
+This is a category-specific model where "not analyzed" is absorbed by the selection model, leaving null vs found conditional on testing.
+
+### Model 3: Domain-Specific Models
+
+Separate (or partially pooled) models for:
+- Production
+- Perception
+- Metalinguistic behavior
+
+**Key question:** Is the evidence base structurally skewed toward production?
+
+### Model 4: Joint Selection-Outcome Model
+
+Potentially model selection and outcome jointly to account for correlation between them (Heckman-style selection correction, Bayesian version).
+
+## Implementation
+
+### Software
+- `brms` for multilevel models
+- `cmdstanr` if custom Stan needed
+- `tidybayes` for posterior visualization
+
+### Workflow
+1. Data prep and EDA
+2. Fit selection model
+3. Fit outcome model (conditional)
+4. Fit domain-specific models
+5. Compare to original findings
+6. Sensitivity analysis
+
+## Questions to Answer
+
+1. **How much variation in "found social significance" is attributable to:**
+   - Variable type (realization vs order)?
+   - Journal (LVC vs JSlx)?
+   - Language?
+   - Individual paper/author effects?
+
+2. **Is the literature biased toward production studies?**
+   - What's the selection rate for production vs perception vs metalinguistic?
+   - Conditional on testing, do success rates differ?
+
+3. **Does the original conclusion hold under multilevel analysis?**
+   - Original: realization variables more often show social significance than order variables
+   - Does this survive controlling for clustering?
+
+## Priors
+
+Use weakly informative priors (regularizing, not subjective):
+- Fixed effects: $\beta \sim \text{Normal}(0, 2.5)$ on log-odds scale
+- Varying intercept SDs: $\sigma_u \sim \text{Exponential}(1)$
+
+## Diagnostics
+
+- Posterior predictive checks
+- LOO-CV for model comparison
+- Trace plots, $\hat{R}$, ESS
+
+## Timeline
+
+Not estimated (per portfolio conventions).
+
+## References
+
+Gelman, A., Hill, J., & Vehtari, A. (2020). *Regression and Other Stories*. Cambridge University Press.
+
+MacKenzie, L., & Robinson, M. (2025). Spelling out grammatical variation. In D. Duncan & M. Robinson (Eds.), *English Sociosyntax: Theory, Evidence, Approaches* (pp. 59-95). De Gruyter Mouton.
+
+McElreath, R. (2020). *Statistical Rethinking* (2nd ed.). CRC Press.
