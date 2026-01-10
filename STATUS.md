@@ -110,6 +110,8 @@ Gelman-style Bayesian reanalysis:
   - Added Tables: Descriptive (N=427) and Selection Estimates (ORs).
   - Explicitly noted JSlx's structural lack of order variables.
   - Standardised year gloss to "per SD" and cleaned up table interpretation.
+  - Refined abstract for precision ("less available", "reported success rates").
+  - Softened Methods tone ("simulate" vs "fake") and corrected spelling (regularising).
 - Formatted lining numbers with commas (4,000).
 
 ## Connections to Other Work
