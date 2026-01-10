@@ -36,7 +36,7 @@ The model has two stages. The \term{selection stage} asks: given a variable--var
 
 Readers familiar with mixed-effects logistic regression~-- the workhorse of variable-rule analysis in tools like Rbrul or Goldvarb~-- will recognize the outcome stage. It's the same model: a binary outcome (found or not) predicted by fixed effects (journal, variation type, year) and random effects (paper, author, language). What's new is pairing it with a selection stage that asks why some variables were tested at all.
 
-Predictors in both stages are journal, variation type, and year. Year is z-scored (centered and scaled), so year odds ratios represent the change associated with a one-standard-deviation increase in publication year~-- roughly a decade in this corpus. Random intercepts for paper, first author, and language account for clustering, and correlations across stages allow the same paper or author to influence both testing and findings.
+Predictors in both stages are journal, variation type, and year. Year is $z$-scored (centered and scaled), so year odds ratios represent the change associated with a one-standard-deviation increase in publication year~-- roughly a decade in this corpus. Random intercepts for paper, first author, and language account for clustering, and correlations across stages allow the same paper or author to influence both testing and findings.
 
 The model is fit in Stan, a probabilistic programming language for Bayesian inference. Priors are regularizing: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centers intercept priors on observed marginal rates. Sampling uses four chains, \\liningnums{4000} iterations (\\liningnums{2000} warmup), and a brms two-stage baseline provides comparison.
 
@@ -97,12 +97,16 @@ The Grammatical Invisibility Principle (GIP) holds that grammatical variables ar
 \subsection{Relation to prior descriptive work}
 The descriptive goal of \textcite{mackenzie2025spelling} is to catalog grammatical variables and assess the state of evidence for social significance in each domain. The present analysis retains their coding scheme and tallies without modification. The points of agreement are substantial: realization variables dominate the literature; order variables are understudied; perception and metalinguistic domains remain sparse.
 
-The focused revision is methodological. MacKenzie and Robinson devote considerable discussion (their Section 5) to selection into testing, including the file drawer problem and the fact that LVC doesn't require a social-significance framing. They correctly note that this selection makes any claim about order variables provisional. What the present analysis adds is an explicit model for this selection mechanism. Rather than treating untested variables as missing data to be ignored, the joint model estimates the probability of testing and conditions the outcome analysis on testing. This quantifies what MacKenzie and Robinson discuss narratively: order variables are much less likely to be tested, and the scarcity of perception/metalinguistic studies in order variables limits conclusions about outcome differences.
+The focused revision is methodological. MacKenzie and Robinson devote considerable discussion (their Section 5) to selection into testing, including the file drawer problem and the fact that LVC doesn't require a social-significance framing. They explicitly note that \enquote{this is absence of evidence being taken as evidence of absence. In reality, the types of studies that have the potential to provide evidence on these points have largely not been done.} What the present analysis adds is an explicit model for this selection mechanism. Rather than treating untested variables as missing data to be ignored, the joint model estimates the probability of testing and conditions the outcome analysis on testing. This formalizes what MacKenzie and Robinson discuss narratively.
+
+The model's selection estimates converge with their descriptive findings. They report that among production studies, LVC finds social significance at 92\% (143/156) compared to JSlx at 83\% (87/105). This difference ($\chi^2=4.65$, $p=.031$) supports their argument that LVC's lack of a social-significance framing requirement doesn't inflate publication bias~-- researchers who look for effects overwhelmingly find them.
 
 The novelty is thus formalization rather than conceptual revision. The selection--outcome decomposition provides a principled statistical framework for claims that MacKenzie and Robinson already make informally. The difference in emphasis is slight: the high baseline success rate (~88--94\%) is the story, and the between-type comparison is null in part because of ceiling effects and limited order data.
 
 \subsection{Limitations and future work}
-Order variables are rare and heavily concentrated in LVC, so journal comparisons are constrained. Outcome effects are data-limited in sparse categories, especially perception and metalinguistic domains; with only 31 tested order variables, power to detect plausible outcome-stage differences is limited. Because the database indexes published studies, the model can't address file-drawer effects where testing occurs but null results aren't published. Future work should expand the corpus beyond two journals and target perception and metalinguistic studies for order variables. It also makes sense to explore alternative temporal structures and to refine the classification of multi-locus variables.
+Order variables are rare and heavily concentrated in LVC, so journal comparisons are constrained. Outcome effects are data-limited in sparse categories, especially perception and metalinguistic domains; with only 31 tested order variables, power to detect plausible outcome-stage differences is limited. Because the database indexes published studies, the model can't address file-drawer effects where testing occurs but null results aren't published.
+
+MacKenzie and Robinson also call for collaboration with formal syntacticians to map realization variables to Spell-Out and order variables to Narrow Syntax. This architectural distinction might predict sociolinguistic differences beyond what the current selection model captures. Future work should expand the corpus beyond two journals, target perception and metalinguistic studies for order variables, and explore whether formal-syntactic classifications improve predictive power.
 
 \section*{Acknowledgements}
 
@@ -130,7 +134,7 @@ The joint selection--outcome model has two stages. For observation $i$:
 \eta^o_i = \alpha^o + \mathbf{x}_i \boldsymbol{\beta}^o + u^o_{\text{paper}[i]} + u^o_{\text{author}[i]} + u^o_{\text{language}[i]}
 \end{equation}
 
-where $\mathbf{x}_i$ is the row of the fixed-effects design matrix containing journal, variation type, and year (z-scored).
+where $\mathbf{x}_i$ is the row of the fixed-effects design matrix containing journal, variation type, and year ($z$-scored).
 
 \textbf{Random effects:} For each grouping factor $g \in \{\text{paper}, \text{author}, \text{language}\}$:
 \begin{equation}
