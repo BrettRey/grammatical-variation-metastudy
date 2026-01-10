@@ -115,3 +115,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Keep user-space Quarto in `~/.local/quarto`.
 - **Evidence:** `quarto --version` returns 1.8.26 after reinstall.
 - **Follow-ups:** Ensure future renders use the system binary.
+
+### 2026-01-10 — Joint Model Scaffold Added
+- **Topic:** Modeling implementation
+- **Decision:** Add a joint selection–outcome model scaffold with prior predictive checks.
+- **Rationale:** Provide a runnable template that matches the analysis plan and supports early model checking.
+- **Alternatives:** Wait to scaffold until EDA is complete.
+- **Evidence:** `analysis/02_eda.qmd` (joint model scaffold sections).
+- **Follow-ups:** Install `brms` and run prior predictive checks once ready.

@@ -1,0 +1,146 @@
+---
+title: "Exploratory Data Analysis + Model Scaffold"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(dplyr)
+library(readr)
+library(stringr)
+library(tidyr)
+library(tibble)
+library(here)
+```
+
+## Load Prepped Data
+
+```{r}
+#| label: load-prepped
+gramm_var <- read_csv(here("analysis/gramm_var_prepped.csv"))
+
+# Standardize year for modeling
+gramm_var <- gramm_var |>
+  mutate(
+    year_z = as.numeric(scale(year)),
+    variation_type_recode = factor(variation_type_recode),
+    journal = factor(journal)
+  )
+
+# Joint-model outcome: observed only when tested
+gramm_var <- gramm_var |>
+  mutate(
+    tested = as.integer(tested),
+    found = as.integer(found),
+    found_cond = if_else(tested == 1L, found, NA_integer_)
+  )
+```
+
+## Basic Counts
+
+```{r}
+#| label: counts
+gramm_var |>
+  count(variation_type_recode, journal)
+
+gramm_var |>
+  count(tested)
+
+gramm_var |>
+  count(found, tested)
+```
+
+## Domain-Specific Testing Rates
+
+```{r}
+#| label: domain-rates
+tibble(
+  domain = c("production", "perception", "metalinguistic"),
+  tested = c(sum(gramm_var$prod_tested), sum(gramm_var$perc_tested), sum(gramm_var$meta_tested)),
+  found = c(sum(gramm_var$prod_found), sum(gramm_var$perc_found), sum(gramm_var$meta_found))
+) |>
+  mutate(found_rate = found / tested)
+```
+
+## Joint Selection–Outcome Model Scaffold (Overall)
+
+```{r}
+#| label: joint-model-scaffold
+#| eval: false
+library(brms)
+
+priors <- c(
+  prior(normal(0, 1.5), class = "Intercept", resp = "tested"),
+  prior(normal(0, 1.5), class = "Intercept", resp = "found_cond"),
+  prior(normal(0, 1.0), class = "b"),
+  prior(exponential(1), class = "sd"),
+  prior(lkj(2), class = "cor")
+)
+
+bf_tested <- bf(
+  tested ~ 1 + variation_type_recode + journal + year_z +
+    (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+)
+
+bf_found <- bf(
+  found_cond ~ 1 + variation_type_recode + journal + year_z +
+    (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+)
+
+fit_prior <- brm(
+  bf_tested + bf_found + set_rescor(FALSE),
+  data = gramm_var,
+  family = bernoulli(),
+  prior = priors,
+  sample_prior = "only",
+  chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
+)
+
+pp_check(fit_prior)
+```
+
+## Joint Models by Domain (Scaffold)
+
+```{r}
+#| label: domain-model-scaffold
+#| eval: false
+fit_domain <- function(data, tested_var, found_var) {
+  data <- data |>
+    mutate(
+      tested_d = as.integer(.data[[tested_var]]),
+      found_d = as.integer(.data[[found_var]]),
+      found_cond_d = if_else(tested_d == 1L, found_d, NA_integer_)
+    )
+
+  bf_tested <- bf(
+    tested_d ~ 1 + variation_type_recode + journal + year_z +
+      (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+  )
+
+  bf_found <- bf(
+    found_cond_d ~ 1 + variation_type_recode + journal + year_z +
+      (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+  )
+
+  brm(
+    bf_tested + bf_found + set_rescor(FALSE),
+    data = data,
+    family = bernoulli(),
+    prior = priors,
+    chains = 2, iter = 2000, warmup = 1000, cores = 2, seed = 123
+  )
+}
+
+# Example (run one at a time):
+# fit_prod <- fit_domain(gramm_var, "prod_tested", "prod_found")
+```
