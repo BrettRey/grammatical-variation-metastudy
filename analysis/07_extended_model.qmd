@@ -1,0 +1,219 @@
+---
+title: "Extended Model: Interaction + Year Spline"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## Purpose
+
+This notebook extends the primary joint selection model with:
+
+1. **Journal × variation-type interaction** in the selection stage — tests whether the selection gap differs by journal (institutional incentive story).
+2. **2-knot piecewise-linear year effect** in the selection stage — allows non-linear temporal trends.
+
+These are robustness extensions; the outcome stage retains only main effects.
+
+## Setup
+
+```{r}
+#| label: setup
+library(dplyr)
+library(readr)
+library(tidyr)
+library(here)
+library(rstan)
+library(posterior)
+library(ggplot2)
+library(splines)
+
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+## Prepare Data
+
+```{r}
+#| label: prepare-data
+raw <- read_csv(here("analysis/gramm_var_prepped.csv"), show_col_types = FALSE) |>
+  mutate(
+    year_z = as.numeric(scale(year)),
+    variation_type_recode = factor(variation_type_recode),
+    journal = factor(journal),
+    paper_id = factor(paper_id),
+    author_id = factor(author_id),
+    language_id = factor(language_id),
+    tested = as.integer(tested),
+    found = as.integer(found)
+  )
+
+# Year spline: 2-knot piecewise linear (linear spline with 2 interior knots)
+year_range <- range(raw$year)
+knots <- quantile(raw$year, probs = c(1/3, 2/3))
+year_spline <- bs(raw$year, knots = knots, degree = 1)
+colnames(year_spline) <- paste0("year_spline_", seq_len(ncol(year_spline)))
+
+# Selection: interaction + year spline
+X_s <- model.matrix(~ variation_type_recode * journal, data = raw)
+X_s <- cbind(X_s[, -1, drop = FALSE], year_spline)  # drop intercept
+
+# Outcome: main effects only + linear year
+X_o <- model.matrix(~ variation_type_recode + journal + year_z, data = raw)
+X_o <- X_o[, -1, drop = FALSE]
+
+stan_data <- list(
+  N = nrow(raw),
+  tested = raw$tested,
+  found = ifelse(raw$tested == 1L, raw$found, 0L),
+  K_s = ncol(X_s),
+  K_o = ncol(X_o),
+  X_s = X_s,
+  X_o = X_o,
+  J_paper = nlevels(raw$paper_id),
+  J_author = nlevels(raw$author_id),
+  J_language = nlevels(raw$language_id),
+  paper_id = as.integer(raw$paper_id),
+  author_id = as.integer(raw$author_id),
+  language_id = as.integer(raw$language_id)
+)
+
+cat("Selection design matrix columns:", colnames(X_s), "\n")
+cat("Outcome design matrix columns:", colnames(X_o), "\n")
+```
+
+## Fit Model
+
+```{r}
+#| label: fit-model
+fit_path <- here("analysis/fit_extended_stan.rds")
+stan_path <- here("stan/selection_model_extended.stan")
+
+if (file.exists(fit_path)) {
+  fit <- readRDS(fit_path)
+} else {
+  sm <- stan_model(stan_path)
+  fit <- sampling(
+    sm,
+    data = stan_data,
+    chains = 4,
+    iter = 4000,
+    warmup = 2000,
+    seed = 123,
+    control = list(adapt_delta = 0.99, max_treedepth = 12)
+  )
+  saveRDS(fit, fit_path)
+}
+```
+
+## Diagnostics
+
+```{r}
+#| label: diagnostics
+summ <- rstan::summary(fit)$summary
+rhat <- summ[, "Rhat"]
+n_eff <- summ[, "n_eff"]
+
+diagnostics <- tibble(
+  max_rhat = max(rhat, na.rm = TRUE),
+  min_n_eff = min(n_eff, na.rm = TRUE),
+  rhat_gt_1_01 = sum(rhat > 1.01, na.rm = TRUE),
+  rhat_gt_1_05 = sum(rhat > 1.05, na.rm = TRUE)
+)
+
+sampler <- rstan::get_sampler_params(fit, inc_warmup = FALSE)
+divergences <- sum(vapply(sampler, function(x) sum(x[, "divergent__"]), numeric(1)))
+max_treedepth_observed <- max(vapply(sampler, function(x) max(x[, "treedepth__"]), numeric(1)))
+max_treedepth_control <- 12
+treedepth_hits <- sum(vapply(sampler, function(x) sum(x[, "treedepth__"] >= max_treedepth_control), numeric(1)))
+
+diag_summary <- diagnostics |>
+  mutate(
+    divergences = divergences,
+    max_treedepth_observed = max_treedepth_observed,
+    max_treedepth_control = max_treedepth_control,
+    treedepth_hits = treedepth_hits
+  )
+
+diag_summary
+```
+
+## Fixed Effects (Odds Ratios)
+
+```{r}
+#| label: fixed-effects
+as_draws <- posterior::as_draws_df(fit)
+
+coef_names_s <- colnames(X_s)
+coef_names_o <- colnames(X_o)
+
+summarize_beta <- function(prefix, coef_names, response) {
+  idx <- paste0(prefix, "[", seq_along(coef_names), "]")
+  tibble(term = coef_names) |>
+    mutate(
+      median = sapply(idx, function(cn) median(exp(as_draws[[cn]]))),
+      q2.5 = sapply(idx, function(cn) quantile(exp(as_draws[[cn]]), 0.025)),
+      q97.5 = sapply(idx, function(cn) quantile(exp(as_draws[[cn]]), 0.975)),
+      response = response
+    )
+}
+
+intercepts <- tibble(
+  term = "Intercept",
+  response = c("tested", "foundcond"),
+  median = c(median(exp(as_draws$alpha_s)), median(exp(as_draws$alpha_o))),
+  q2.5 = c(quantile(exp(as_draws$alpha_s), 0.025), quantile(exp(as_draws$alpha_o), 0.025)),
+  q97.5 = c(quantile(exp(as_draws$alpha_s), 0.975), quantile(exp(as_draws$alpha_o), 0.975))
+)
+
+or_table <- bind_rows(
+  intercepts,
+  summarize_beta("beta_s", coef_names_s, "tested"),
+  summarize_beta("beta_o", coef_names_o, "foundcond")
+) |>
+  arrange(response, term)
+
+or_table
+```
+
+```{r}
+#| label: write-or-table
+write_lines("# Extended Model OR Table (Interaction + Year Spline)\n", here("analysis/extended_model_or_table.md"))
+
+table_out <- or_table |>
+  mutate(estimate = sprintf("%.2f [%.2f, %.2f]", median, q2.5, q97.5)) |>
+  select(response, term, estimate) |>
+  knitr::kable(format = "pipe")
+
+write_lines(table_out, here("analysis/extended_model_or_table.md"), append = TRUE)
+```
+
+## Interpretation
+
+Key questions:
+
+1. **Interaction**: Does the journal × variation-type interaction suggest institutional differences in selection? A positive interaction would mean JSlx has a larger selection gap between realization and order than LVC.
+
+2. **Year spline**: Do the spline coefficients suggest non-linear temporal trends in selection? If all spline segments point in the same direction, linearity was sufficient; if they diverge, there may be period effects.
+
+```{r}
+#| label: interpretation-summary
+# Interaction term interpretation
+interaction_terms <- or_table |>
+  filter(response == "tested", grepl(":", term))
+
+cat("Interaction terms (selection stage):\n")
+print(interaction_terms)
+
+# Year spline interpretation
+spline_terms <- or_table |>
+  filter(response == "tested", grepl("year_spline", term))
+
+cat("\nYear spline terms (selection stage):\n")
+print(spline_terms)
+```

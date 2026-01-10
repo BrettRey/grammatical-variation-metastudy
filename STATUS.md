@@ -52,6 +52,13 @@ Gelman-style Bayesian reanalysis:
 - Added interpretation/visualization notebook and OR summary table
 - Fit domain-specific two-stage models and generated OR table
 - Implemented and fit custom Stan joint selection model
+
+### 2026-01-10 (Claude/Gemini)
+- Added prose revisions: caveat on "found" heterogeneity, shrinkage interpretation, surfaced "both" sensitivity earlier, disciplined rhetoric
+- Created extended Stan model with journal × variation-type interaction and 2-knot year spline
+- Fit extended model; interaction and spline effects have wide intervals, supporting primary model assumptions
+- Updated main.tex robustness section with extended model results
+- Documented decisions in FORKING_PATHS.md
 - Drafted Methods/Results/Discussion scaffold in `main.tex` with citations and figures
 - Added variationist-oriented explanations (PPCs, ORs, CrIs) and a Rapoport-rules framing note
 - Added figure captions and GitHub repository link in manuscript
