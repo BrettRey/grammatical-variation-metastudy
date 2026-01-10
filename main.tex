@@ -38,7 +38,7 @@ Readers familiar with mixed-effects logistic regression~-- the workhorse of vari
 
 Predictors in both stages are journal, variation type, and year. Year is $z$-scored (centered and scaled), so year odds ratios represent the change associated with a one-standard-deviation increase in publication year~-- roughly a decade in this corpus. Random intercepts for paper, first author, and language account for clustering, and correlations across stages allow the same paper or author to influence both testing and findings.
 
-The model is fit in Stan, a probabilistic programming language for Bayesian inference. Priors are regularizing: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centers intercept priors on observed marginal rates. Sampling uses four chains, \\liningnums{4000} iterations (\\liningnums{2000} warmup), and a brms two-stage baseline provides comparison.
+The model is fit in Stan, a probabilistic programming language for Bayesian inference. Priors are regularizing: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centers intercept priors on observed marginal rates. Sampling uses four chains, \liningnums{4000} iterations (\liningnums{2000} warmup), and a brms two-stage baseline provides comparison.
 
 \subsection{Reading the output}
 Results are presented as odds ratios (ORs) with 95\% credible intervals (CrIs). An OR of 2 means twice the odds; an OR of 0.5 means half the odds. A 95\% CrI is the Bayesian analog of a confidence interval: it's the range within which the true value lies with 95\% probability, given the data and model. If the interval doesn't include 1, the effect is reliably different from no effect.
@@ -46,6 +46,8 @@ Results are presented as odds ratios (ORs) with 95\% credible intervals (CrIs). 
 Posterior predictive checks (PPCs) ask: \enquote{Can the model reproduce data like ours?} If simulated data from the fitted model cluster around the observed data, the model is capturing the key structure. If not, something is missing.
 
 One feature of Bayesian models with random effects is \term{partial pooling}: estimates for groups with little data are pulled toward the overall mean. This protects against overfitting small samples. Wide intervals for sparse categories (like order variables in perception studies) should be read as \enquote{data can't resolve this}, not \enquote{effect is absent.}
+
+A note on significance testing: this analysis reports credible intervals rather than $p$-values. Bayesian inference asks \enquote{how probable are different parameter values given the data?} rather than \enquote{how surprising would the data be under a nil hypothesis?} There's no yes/no significance threshold. Instead, intervals convey uncertainty directly: narrow intervals mean the data are informative; wide intervals mean they're not. This framing avoids the dichotomous thinking that has plagued the social sciences and aligns with recent calls for more nuanced statistical inference.
 
 \section{Results}
 
