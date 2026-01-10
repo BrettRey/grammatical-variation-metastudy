@@ -5,7 +5,7 @@
 
 ## Current State
 
-Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated.
+Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated. Initial joint model fits run (diagnostics pending).
 
 ## Origin
 
@@ -43,6 +43,7 @@ Gelman-style Bayesian reanalysis:
 - Drafted CLAUDE.md and STATUS.md
 - Outlined analysis structure
 - Rendered `analysis/01_data_prep.qmd` and generated `analysis/gramm_var_prepped.csv`
+- Fit initial joint models (regularizing + centered priors); diagnostics to revisit
 
 ## Connections to Other Work
 

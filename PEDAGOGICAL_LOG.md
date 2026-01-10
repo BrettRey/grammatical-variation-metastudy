@@ -156,6 +156,14 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/02_eda.qmd` (prior sensitivity section, quantile summary).
 - **Follow-ups:** Compare posterior results under both priors once fitting begins.
 
+### 2026-01-10 — First Joint Model Fits (Diagnostics)
+- **Topic:** Model fitting
+- **Decision:** Fit joint selection–outcome model under regularizing and centered priors (2 chains, 2k iters).
+- **Rationale:** Establish baseline fits for comparison.
+- **Alternatives:** Fit only one prior; increase iterations upfront.
+- **Evidence:** `analysis/fit_joint_regularizing.rds`, `analysis/fit_joint_centered.rds` (not tracked).
+- **Follow-ups:** Address diagnostics (divergence + R-hat/ESS) by increasing iterations and/or `adapt_delta`.
+
 ### 2026-01-10 — Forking Paths Log Added
 - **Topic:** Decision transparency
 - **Decision:** Add a dedicated forking-paths log to track analytic choices and alternatives.
