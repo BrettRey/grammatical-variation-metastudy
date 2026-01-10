@@ -63,6 +63,31 @@ Gelman-style Bayesian reanalysis:
 - Added variationist-oriented explanations (PPCs, ORs, CrIs) and a Rapoport-rules framing note
 - Added figure captions and GitHub repository link in manuscript
 
+### 2026-01-10 (Claude — Pedagogical Revision Session)
+- Applied house style: contractions, curly apostrophes, spaced en-dashes, removed authorial "we"
+- Added AI acknowledgement (ChatGPT 5.2, Claude Opus 4.5)
+- Major pedagogical overhaul:
+  - Drafted abstract following Rapoport's rules structure
+  - Added "Why a selection model?" section (survivor bias motivation)
+  - Added bridge to Rbrul/Goldvarb for variationists
+  - Added "Reading the output" primer (ORs, CrIs, PPCs, partial pooling, no p-values)
+  - Bulleted selection results with plain-English interpretations
+  - Expanded figure captions with interpretation guidance
+- Added footnote documenting NA-to-null recoding in data prep
+- Implemented 9 reviewer fixes:
+  - Abstract: "in the published record", posterior-predicted rates
+  - Counterfactual explicit, CrI definition with posterior mass
+  - Reference levels stated (JSlx, both); nil→null
+  - refutes→undercuts with positive-selection caveat
+  - Paraphrased M&R quote; covariance matrix σ→σ²
+  - Author responsibility in acknowledgements
+  - LVC paradox explicit in limitations; power note added
+- Implemented simulated reviewer critiques (Zimmer, Gelman, Khalidi, Godfrey-Smith):
+  - Abstract: "social invisibility" puzzle lede
+  - Intro: Dative alternation example (humans not just variables)
+  - Interpretation: Predictive implications over "CrI excludes 1"
+  - Discussion: Capacity vs. Research Filter distinction; Causal pathways note
+
 ## Connections to Other Work
 
 - **Boundary phenomena** (reciprocals paper, HPC book): The question of whether grammatical variation is "different" from phonological variation is a boundary question

@@ -376,4 +376,35 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `main.tex` Appendix A.
 - **Follow-ups:** Consider adding Stan code as supplementary material.
 
+### 2026-01-10 — Pedagogical Overhaul
+- **Topic:** Accessibility for variationists
+- **Decision:** Major restructuring: added "Why a selection model?" section, "Reading the output" primer, bulleted results with plain-English interpretations, expanded figure captions.
+- **Rationale:** Most variationists aren't familiar with Bayesian selection models; Gelman-style accessibility requires bridging to familiar concepts (Rbrul, mixed-effects logistic regression) and explicit interpretation guidance.
+- **Alternatives:** Keep terse statistical write-up; defer pedagogy to appendices.
+- **Evidence:** `main.tex` Methods/Results sections.
+- **Follow-ups:** Year SD still uses "roughly a decade" — should compute actual SD from data.
 
+### 2026-01-10 — Reviewer Fixes (9 items)
+- **Topic:** Precision and reviewer-proofing
+- **Decision:** Implemented: abstract precision ("in the published record"), counterfactual explicit, CrI definition, nil→null, reference levels, refutes→undercuts, quote paraphrase, covariance σ², author responsibility.
+- **Rationale:** Pre-empt predictable reviewer objections; align claims with what selection design licenses.
+- **Evidence:** `main.tex` throughout.
+- **Follow-ups:** None.
+
+### 2026-01-10 — House Style Applied
+- **Topic:** Style consistency
+- **Decision:** Applied contractions, curly apostrophes, spaced en-dashes, removed authorial "we" (single-author paper), $z$-scored formatting.
+- **Rationale:** House style adherence per `.house-style/style-guide.md`.
+- **Evidence:** `main.tex`.
+- **Follow-ups:** Style checker still flags math-mode underscores (false positives).
+
+
+### 2026-01-10 — Simulated Reviewer Critiques (Zimmer, Gelman, Khalidi, Godfrey-Smith)
+- **Topic:** Conceptual framing and epistemic humility
+- **Decision:** Major revisions to Abstract, Intro, Interpretation, and Discussion.
+  - **Abstract:** Opened with the "invisibility myth" puzzle (Zimmer).
+  - **Intro:** Added dative alternation example to ground "selection" in human terms (Zimmer).
+  - **Interpretation:** Shifted from "CrI excludes 1" to "predictive implications" (Gelman).
+  - **Discussion:** Explicitly distinguished "capacity" from "research filter" (Khalidi/Godfrey-Smith). Added causal pathways (salience, register) as the real target for future work.
+- **Rationale:** The initial draft was too focused on the "methodological refinement" and missed the core story about the construction of scientific knowledge. The high "found" rate is now framed as evidence of a filter, not just capacity.
+- **Evidence:** `main.tex` abstract and §4.2.
