@@ -43,7 +43,7 @@ Gelman-style Bayesian reanalysis:
 - Drafted CLAUDE.md and STATUS.md
 - Outlined analysis structure
 - Rendered `analysis/01_data_prep.qmd` and generated `analysis/gramm_var_prepped.csv`
-- Fit initial joint models (regularizing + centered priors); diagnostics to revisit
+- Fit joint models (regularizing + centered priors); centered model refit with higher adapt_delta
 
 ## Connections to Other Work
 

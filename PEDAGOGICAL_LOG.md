@@ -164,6 +164,14 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Evidence:** `analysis/fit_joint_regularizing.rds`, `analysis/fit_joint_centered.rds` (not tracked).
 - **Follow-ups:** Address diagnostics (divergence + R-hat/ESS) by increasing iterations and/or `adapt_delta`.
 
+### 2026-01-10 — Centered Model Refit (Improved ESS)
+- **Topic:** Diagnostics tuning
+- **Decision:** Refit centered-prior model with `adapt_delta = 0.99` (4 chains, 4k iters).
+- **Rationale:** Improve ESS for group-level SDs while retaining the centered sensitivity check.
+- **Alternatives:** Increase iterations further; simplify random effects.
+- **Evidence:** `analysis/fit_joint_centered.rds` (updated).
+- **Follow-ups:** Compare posterior summaries across priors and proceed to reporting.
+
 ### 2026-01-10 — Forking Paths Log Added
 - **Topic:** Decision transparency
 - **Decision:** Add a dedicated forking-paths log to track analytic choices and alternatives.
