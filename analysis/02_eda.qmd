@@ -42,7 +42,7 @@ gramm_var <- gramm_var |>
   mutate(
     tested = as.integer(tested),
     found = as.integer(found),
-    found_cond = if_else(tested == 1L, found, NA_integer_)
+    foundcond = if_else(tested == 1L, found, NA_integer_)
   )
 ```
 
@@ -76,25 +76,26 @@ tibble(
 
 ```{r}
 #| label: joint-model-scaffold
-#| eval: false
+#| eval: true
 library(brms)
 
 priors <- c(
-  prior(normal(0, 1.5), class = "Intercept", resp = "tested"),
-  prior(normal(0, 1.5), class = "Intercept", resp = "found_cond"),
-  prior(normal(0, 1.0), class = "b"),
-  prior(exponential(1), class = "sd"),
-  prior(lkj(2), class = "cor")
+  set_prior("normal(0, 1.5)", class = "Intercept", resp = "tested"),
+  set_prior("normal(0, 1.5)", class = "Intercept", resp = "foundcond"),
+  set_prior("normal(0, 1.0)", class = "b", resp = "tested"),
+  set_prior("normal(0, 1.0)", class = "b", resp = "foundcond"),
+  set_prior("exponential(1)", class = "sd", resp = "tested"),
+  set_prior("exponential(1)", class = "sd", resp = "foundcond")
 )
 
 bf_tested <- bf(
   tested ~ 1 + variation_type_recode + journal + year_z +
-    (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+    (1 | paper_id) + (1 | author_id) + (1 | language_id)
 )
 
 bf_found <- bf(
-  found_cond ~ 1 + variation_type_recode + journal + year_z +
-    (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+  foundcond ~ 1 + variation_type_recode + journal + year_z +
+    (1 | paper_id) + (1 | author_id) + (1 | language_id)
 )
 
 fit_prior <- brm(
@@ -106,7 +107,8 @@ fit_prior <- brm(
   chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
 )
 
-pp_check(fit_prior)
+pp_check(fit_prior, resp = "tested")
+pp_check(fit_prior, resp = "foundcond")
 ```
 
 ## Joint Models by Domain (Scaffold)
@@ -119,24 +121,33 @@ fit_domain <- function(data, tested_var, found_var) {
     mutate(
       tested_d = as.integer(.data[[tested_var]]),
       found_d = as.integer(.data[[found_var]]),
-      found_cond_d = if_else(tested_d == 1L, found_d, NA_integer_)
+      foundcond_d = if_else(tested_d == 1L, found_d, NA_integer_)
     )
 
   bf_tested <- bf(
     tested_d ~ 1 + variation_type_recode + journal + year_z +
-      (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+      (1 | paper_id) + (1 | author_id) + (1 | language_id)
   )
 
   bf_found <- bf(
-    found_cond_d ~ 1 + variation_type_recode + journal + year_z +
-      (1 | p | paper_id) + (1 | p | author_id) + (1 | p | language_id)
+    foundcond_d ~ 1 + variation_type_recode + journal + year_z +
+      (1 | paper_id) + (1 | author_id) + (1 | language_id)
+  )
+
+  priors_d <- c(
+    set_prior("normal(0, 1.5)", class = "Intercept", resp = "tested_d"),
+    set_prior("normal(0, 1.5)", class = "Intercept", resp = "foundcond_d"),
+    set_prior("normal(0, 1.0)", class = "b", resp = "tested_d"),
+    set_prior("normal(0, 1.0)", class = "b", resp = "foundcond_d"),
+    set_prior("exponential(1)", class = "sd", resp = "tested_d"),
+    set_prior("exponential(1)", class = "sd", resp = "foundcond_d")
   )
 
   brm(
     bf_tested + bf_found + set_rescor(FALSE),
     data = data,
     family = bernoulli(),
-    prior = priors,
+    prior = priors_d,
     chains = 2, iter = 2000, warmup = 1000, cores = 2, seed = 123
   )
 }

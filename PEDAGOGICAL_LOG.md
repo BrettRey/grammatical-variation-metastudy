@@ -131,3 +131,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Use `cmdstanr` only with custom Stan.
 - **Evidence:** `Rscript -e "library(brms)"` succeeded.
 - **Follow-ups:** Run prior predictive checks in `analysis/02_eda.qmd`.
+
+### 2026-01-10 — Prior Predictive Check (Joint Model)
+- **Topic:** Model checking
+- **Decision:** Run prior predictive checks separately for `tested` and `foundcond` in the multivariate model.
+- **Rationale:** `pp_check()` on multivariate models requires an explicit response; checking both preserves the two-stage interpretation.
+- **Alternatives:** Skip prior predictive checks; check only one response.
+- **Evidence:** `analysis/02_eda.qmd` rendered with `pp_check(..., resp = "tested")` and `pp_check(..., resp = "foundcond")`.
+- **Follow-ups:** Review plots and adjust priors if implied rates look implausible.
