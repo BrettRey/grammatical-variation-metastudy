@@ -22,5 +22,16 @@ output/
 # Local PDFs
 analysis/*.pdf
 
+# LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+main.pdf
+*.synctex.gz
+
 # OS
 .DS_Store
