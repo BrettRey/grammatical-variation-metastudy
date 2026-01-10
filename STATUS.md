@@ -5,7 +5,7 @@
 
 ## Current State
 
-Project initialized. Upstream repo cloned. Analysis plan drafted.
+Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated.
 
 ## Origin
 
@@ -42,6 +42,7 @@ Gelman-style Bayesian reanalysis:
 - Cloned upstream repo
 - Drafted CLAUDE.md and STATUS.md
 - Outlined analysis structure
+- Rendered `analysis/01_data_prep.qmd` and generated `analysis/gramm_var_prepped.csv`
 
 ## Connections to Other Work
 
