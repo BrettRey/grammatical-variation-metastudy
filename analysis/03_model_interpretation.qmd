@@ -116,6 +116,84 @@ ggplot(preds, aes(x = variation_type_recode, y = Estimate, color = journal)) +
        color = "Journal")
 ```
 
+## Marginal Predicted Probabilities (Observed Covariates + Random Effects)
+
+```{r}
+#| label: marginal-predicted-probabilities
+fit_df <- as_tibble(fit_regularizing$data)
+if (!"year_z" %in% names(fit_df)) {
+  fit_df <- fit_df |>
+    mutate(year_z = as.numeric(scale(year)))
+}
+
+base_df <- fit_df |>
+  select(year_z, paper_id, author_id, language_id) |>
+  mutate(row_id = row_number())
+
+combos <- expand_grid(
+  variation_type_recode = levels(fit_df$variation_type_recode),
+  journal = levels(fit_df$journal)
+) |>
+  mutate(combo_id = row_number())
+
+newdata_marg <- combos |>
+  crossing(base_df) |>
+  mutate(
+    variation_type_recode = factor(variation_type_recode,
+                                   levels = levels(fit_df$variation_type_recode)),
+    journal = factor(journal, levels = levels(fit_df$journal))
+  )
+
+epred_tested <- posterior_epred(
+  fit_regularizing,
+  newdata = newdata_marg,
+  re_formula = NULL,
+  resp = "tested"
+)
+
+epred_found <- posterior_epred(
+  fit_regularizing,
+  newdata = newdata_marg,
+  re_formula = NULL,
+  resp = "foundcond"
+)
+
+idx_list <- split(seq_len(ncol(epred_tested)), newdata_marg$combo_id)
+
+avg_over_rows <- function(mat, idx_list) {
+  sapply(idx_list, function(cols) rowMeans(mat[, cols, drop = FALSE]))
+}
+
+summarize_draws <- function(mat) {
+  tibble(
+    Estimate = apply(mat, 2, median),
+    Q2.5 = apply(mat, 2, quantile, probs = 0.025),
+    Q97.5 = apply(mat, 2, quantile, probs = 0.975)
+  )
+}
+
+avg_tested <- avg_over_rows(epred_tested, idx_list)
+avg_found <- avg_over_rows(epred_found, idx_list)
+
+marginal_preds <- bind_cols(combos, summarize_draws(avg_tested)) |>
+  mutate(response = "tested") |>
+  bind_rows(
+    bind_cols(combos, summarize_draws(avg_found)) |>
+      mutate(response = "foundcond")
+  )
+
+ggplot(marginal_preds, aes(x = variation_type_recode, y = Estimate, color = journal)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5),
+                width = 0.1,
+                position = position_dodge(width = 0.3)) +
+  facet_wrap(~ response, ncol = 1) +
+  labs(title = "Marginal Predicted Probabilities (Observed Covariates + Random Effects)",
+       y = "Predicted probability",
+       x = NULL,
+       color = "Journal")
+```
+
 ## Sensitivity Check (Centered Priors)
 
 ```{r}

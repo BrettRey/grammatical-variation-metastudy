@@ -187,3 +187,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Use only `PEDAGOGICAL_LOG.md`.
 - **Evidence:** `analysis/FORKING_PATHS.md`, `AGENTS.md`, `CLAUDE.md`.
 - **Follow-ups:** Update the log whenever a decision changes status.
+
+### 2026-01-10 — Marginal Predictions Plot
+- **Topic:** Interpretation scaffolding
+- **Decision:** Add a second plot that averages predictions over the observed covariate distribution and includes random effects.
+- **Rationale:** Contrast fixed-covariate predictions with a marginal view that reflects observed heterogeneity.
+- **Alternatives:** Show only fixed-covariate predictions or only group-level marginal means.
+- **Evidence:** `analysis/03_model_interpretation.qmd` (marginal predicted probabilities section).
+- **Follow-ups:** Compare marginal plot to fixed-covariate plot for sensitivity.
