@@ -91,3 +91,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Informal checks only.
 - **Evidence:** `analysis/00_analysis_plan.qmd` (Gelman-Style Workflow Checklist; Sensitivity Analyses).
 - **Follow-ups:** Update the checklist when we add the first fitted model.
+
+### 2026-01-10 — Local Quarto + Minimal R Package Set
+- **Topic:** Tooling pragmatics
+- **Decision:** Install Quarto locally (user-space) and rely on core tidyverse packages (`dplyr`, `readr`, `stringr`, `tibble`, `tidyr`) instead of the `tidyverse` meta-package.
+- **Rationale:** Avoided sudo-required installers and a failed `tidyverse` build due to graphics dependencies (`ragg`, `textshaping`).
+- **Alternatives:** System-wide Quarto install; full `tidyverse` meta-package.
+- **Evidence:** `analysis/01_data_prep.qmd` package imports; successful Quarto render.
+- **Follow-ups:** Revisit full tidyverse install only if needed for plotting/advanced workflows.

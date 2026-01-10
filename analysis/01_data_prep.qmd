@@ -15,7 +15,11 @@ execute:
 
 ```{r}
 #| label: setup
-library(tidyverse)
+library(dplyr)
+library(readr)
+library(stringr)
+library(tibble)
+library(tidyr)
 library(here)
 
 # Load data

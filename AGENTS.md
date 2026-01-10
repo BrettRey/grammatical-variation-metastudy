@@ -11,7 +11,7 @@
 No centralized build system is defined; render Quarto notebooks directly.
 - Render data prep: `quarto render analysis/01_data_prep.qmd`
 - Render the plan: `quarto render analysis/00_analysis_plan.qmd`
-These commands require R with `tidyverse` and `here` installed.
+These commands require R with `dplyr`, `readr`, `stringr`, `tibble`, `tidyr`, and `here` installed.
 If cloning fresh, initialize submodules: `git submodule update --init --recursive`.
 
 ## Coding Style & Naming Conventions
