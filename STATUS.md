@@ -108,6 +108,8 @@ Gelman-style Bayesian reanalysis:
   - Removed improper "we" pronouns for single-author voice.
   - Removed redundant "partial pooling" explanation from Results.
   - Added Tables: Descriptive (N=427) and Selection Estimates (ORs).
+  - Explicitly noted JSlx's structural lack of order variables.
+  - Standardised year gloss to "per SD" and cleaned up table interpretation.
 - Formatted lining numbers with commas (4,000).
 
 ## Connections to Other Work

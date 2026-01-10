@@ -454,4 +454,6 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Voice:** Removed improper "we" pronouns ("we typicaly look" → "researchers typically look", "so we provide" → "so I provide").
   - **Redundancy:** Removed repetitive partial pooling explanation from Results (already in Methods).
   - **Tables:** Added Table 1 (Descriptive) and Table 2 (Estimates) to anchor abstract claims in visible data.
+  - **Precision:** Explicitly noted JSlx's structural lack of order variables to preempt "extrapolation" critiques.
+  - **Tone:** Adjusted Methods analogy to "simulate" (vs "fake") and tightened abstract scope.
 - **Evidence:** `main.tex`.
