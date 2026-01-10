@@ -27,49 +27,54 @@ Coding follows \textcite{mackenzie2025spelling}, which adapts the form--order--o
 Social significance is coded as \enquote{not investigated}, \enquote{investigated but not found}, or \enquote{found}. When investigated, evidence is recorded as production, perception, or metalinguistic behaviors. In modeling, \enquote{tested} corresponds to \enquote{investigated}, and \enquote{found} is defined conditional on testing.
 
 \subsection{Modeling strategy}
-A joint selection--outcome model is fit in Stan to avoid complete-case dropping of untested rows. The selection stage models the probability that a variable is tested, and the outcome stage models the probability of finding social significance given testing. Predictors in both stages are journal, variation type, and year (z-scored). Random intercepts for paper, author, and language are included, with correlations across stages.
+The goal is to separate two linked questions that variationists often discuss informally: which variables get tested for social meaning, and, once tested, which variables show social meaning. A joint selection--outcome model makes this explicit and avoids discarding untested rows. The selection stage models whether a variable is tested at all, and the outcome stage models whether social significance is found given testing. The outcome stage is directly analogous to a variable-rule logistic regression, but it is paired with a model for selection into testing. The model is fit in Stan, a probabilistic programming language for Bayesian inference.
 
-Priors are regularizing on the logit scale: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. Sampling uses four chains, \liningnums{4000} iterations (\liningnums{2000} warmup), $\text{adapt\_delta}=0.99$, and \texttt{max\_treedepth} \liningnums{12}. A brms two-stage baseline provides comparison.
+Predictors in both stages are journal, variation type, and year (z-scored). Random intercepts for paper, author, and language account for clustering, and correlations across stages allow the same paper or author to influence both testing and findings. This structure estimates selection bias rather than treating it as unobserved noise.
+
+Priors are regularizing on the logit scale: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centers intercept priors on observed marginal rates while keeping slope and random-effect priors unchanged. Sampling uses four chains, \liningnums{4000} iterations (\liningnums{2000} warmup), $\text{adapt\_delta}=0.99$, and \texttt{max\_treedepth} \liningnums{12}. A brms (Bayesian regression models using Stan) two-stage baseline provides comparison.
 
 \section{Results}
 
 \subsection{Model fit and predictive checks}
-Targeted posterior predictive checks show that the Stan model reproduces observed testing and finding rates both overall and within journal and variation-type strata (Figures~\ref{fig:ppc-overall} and~\ref{fig:ppc-stratified}). The observed rates fall well inside the posterior predictive distributions, so the model captures the main selection structure without apparent overfitting. Probability-scale predictions show systematic differences in testing by journal and variation type (Figure~\ref{fig:probabilities}).
+Posterior predictive checks (PPCs) ask whether replicated data from the fitted model resemble the observed data. Here, the replicated tested and found rates cluster around the observed rates overall and within journal and variation-type strata (Figures~\ref{fig:ppc-overall} and~\ref{fig:ppc-stratified}). The observed rates fall well inside the predictive distributions, suggesting that the model captures the main selection structure without apparent overfitting. Population-level predicted probabilities make the selection patterns easier to read (Figure~\ref{fig:probabilities}).
 
-\begin{figure}
+\begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/ppc-overall.png}
-  \caption{Posterior predictive checks for overall tested and found rates.}
+  \includegraphics[width=\textwidth]{ppc-overall.png}
+  \caption{Posterior predictive checks for overall tested and found rates. Vertical lines mark the observed rates.}
   \label{fig:ppc-overall}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/ppc-stratified.png}
-  \caption{Stratified posterior predictive checks by journal and variation type.}
+  \includegraphics[width=\textwidth]{ppc-stratified.png}
+  \caption{Stratified posterior predictive checks by journal and variation type. Vertical lines mark the observed rates.}
   \label{fig:ppc-stratified}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/probabilities.png}
-  \caption{Population-level predicted probabilities by journal and variation type.}
+  \includegraphics[width=\textwidth]{probabilities.png}
+  \caption{Population-level predicted probabilities by journal (color) and variation type. Points show posterior medians with 95\% credible intervals.}
   \label{fig:probabilities}
 \end{figure}
 
 \subsection{Selection (tested)}
-Testing varies by journal, variation type, and year. LVC is less likely to test variables than JSlx (OR $\approx 0.37$, 95\% CrI 0.17--0.83). Realization variables are more likely to be tested than order variables (OR $\approx 2.33$, 95\% CrI 1.12--4.89). Testing increases over time (OR $\approx 1.65$, 95\% CrI 1.04--2.67). The order--both contrast remains uncertain.
+Odds ratios (ORs) and credible intervals (CrIs) summarize the selection stage. Values above 1 mean higher odds of being tested, and values below 1 mean lower odds. Testing varies by journal, variation type, and year. LVC is less likely to test variables than JSlx (OR $\approx 0.37$, 95\% CrI 0.17--0.83). Realization variables are more likely to be tested than order variables (OR $\approx 2.33$, 95\% CrI 1.12--4.89). Testing increases over time (OR $\approx 1.65$, 95\% CrI 1.04--2.67). The order--both contrast remains uncertain.
 
 \subsection{Outcome (found \texorpdfstring{$\mid$}{|} tested)}
-Once variables are tested, the probability of finding social significance is high and shows wide overlap across journals and variation types. Outcome effects have intervals that span no effect, so there is no strong evidence for systematic differences in found rates conditional on testing.
+Outcome effects describe what happens once testing occurs. The probability of finding social significance is high and shows wide overlap across journals and variation types. Outcome effects have intervals that span no effect, so there is no strong evidence for systematic differences in found rates conditional on testing.
 
 \subsection{Robustness}
-The brms two-stage baseline yields the same qualitative pattern: selection effects are stable, outcome effects are weak. A sensitivity check that counts \enquote{both} variables in both categories reproduces the same testing-rate asymmetry, matching the reporting convention in the original study.
+The brms two-stage baseline yields the same qualitative pattern: selection effects are stable, outcome effects are weak. The centered-intercept sensitivity run reproduces the same conclusions. A check that counts \enquote{both} variables in both categories reproduces the same testing-rate asymmetry, matching the reporting convention in the original study.
 
 \section{Discussion}
 
 \subsection{Selection vs. outcome}
 The main asymmetry is in selection. Journals, variable type, and time shape which variables are tested, but tested variables show high and overlapping probabilities of social significance. This supports a selection-driven account of the literature: the bottleneck is which variables are studied, not whether tested variables can carry social meaning.
+
+\subsection{Relation to prior descriptive work}
+Following Rapoport's rules as summarized by Dennett, the discussion proceeds by stating the original descriptive goal, identifying points of agreement, and then offering a focused revision. The descriptive tallies and coding scheme in \textcite{mackenzie2025spelling} are retained. The present contribution is to add an explicit selection stage so that the interpretation of social-significance findings does not condition on the tested subset alone.
 
 \subsection{Limitations and future work}
 Order variables are rare and heavily concentrated in LVC, so journal comparisons are constrained. Outcome effects are data-limited in sparse categories, especially perception and metalinguistic domains. Future work should expand the corpus beyond two journals and target perception and metalinguistic studies for order variables. It also makes sense to explore alternative temporal structures and to refine the classification of multi-locus variables.
