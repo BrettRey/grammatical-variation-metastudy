@@ -131,6 +131,7 @@ perc_realization <- gramm_var |>
 #| label: prior-sensitivity
 #| eval: true
 library(brms)
+library(ggplot2)
 
 # Empirical baselines for data-centered intercepts (sensitivity check)
 logit <- function(p) log(p / (1 - p))
@@ -183,10 +184,21 @@ fit_prior_centered <- brm(
   chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
 )
 
-pp_check(fit_prior_agnostic, resp = "tested")
-pp_check(fit_prior_agnostic, resp = "foundcond")
-pp_check(fit_prior_centered, resp = "tested")
-pp_check(fit_prior_centered, resp = "foundcond")
+pp_check(fit_prior_agnostic, resp = "tested") +
+  ggtitle("Prior predictive: tested (agnostic priors)") +
+  labs(subtitle = "y = observed, y_rep = simulated")
+
+pp_check(fit_prior_agnostic, resp = "foundcond") +
+  ggtitle("Prior predictive: found | tested (agnostic priors)") +
+  labs(subtitle = "y = observed, y_rep = simulated")
+
+pp_check(fit_prior_centered, resp = "tested") +
+  ggtitle("Prior predictive: tested (centered priors)") +
+  labs(subtitle = "y = observed, y_rep = simulated")
+
+pp_check(fit_prior_centered, resp = "foundcond") +
+  ggtitle("Prior predictive: found | tested (centered priors)") +
+  labs(subtitle = "y = observed, y_rep = simulated")
 
 summarize_prior_rates <- function(fit, resp) {
   ep <- posterior_epred(fit, resp = resp)
