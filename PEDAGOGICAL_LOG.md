@@ -139,3 +139,19 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Skip prior predictive checks; check only one response.
 - **Evidence:** `analysis/02_eda.qmd` rendered with `pp_check(..., resp = "tested")` and `pp_check(..., resp = "foundcond")`.
 - **Follow-ups:** Review plots and adjust priors if implied rates look implausible.
+
+### 2026-01-10 — Priors Tightened After PPC
+- **Topic:** Prior regularization
+- **Decision:** Tighten priors to Normal(0,1.2) intercepts, Normal(0,0.7) slopes, Exponential(2) SDs.
+- **Rationale:** Prior predictive curves were too diffuse and allowed extreme rates; tighter priors improve stability.
+- **Alternatives:** Keep original priors; tighten only intercepts.
+- **Evidence:** `analysis/02_eda.qmd`, `analysis/FORKING_PATHS.md`.
+- **Follow-ups:** Re-run prior predictive checks and confirm plausibility.
+
+### 2026-01-10 — Forking Paths Log Added
+- **Topic:** Decision transparency
+- **Decision:** Add a dedicated forking-paths log to track analytic choices and alternatives.
+- **Rationale:** Separate process notes from decision accounting; reduce hidden flexibility.
+- **Alternatives:** Use only `PEDAGOGICAL_LOG.md`.
+- **Evidence:** `analysis/FORKING_PATHS.md`, `AGENTS.md`, `CLAUDE.md`.
+- **Follow-ups:** Update the log whenever a decision changes status.

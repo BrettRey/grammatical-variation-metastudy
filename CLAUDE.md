@@ -69,6 +69,7 @@ grammatical-variation-metastudy/
 │   └── 05_synthesis.qmd
 ├── stan/                        # Stan model files
 ├── PEDAGOGICAL_LOG.md           # Teaching-oriented decisions and lessons
+├── analysis/FORKING_PATHS.md    # Forking-paths / decisions log
 ├── CLAUDE.md
 └── STATUS.md
 ```
@@ -93,3 +94,7 @@ If an action requires `sudo` or system-wide installs, pause and ask the user for
 ## Pedagogical Log
 
 Maintain `PEDAGOGICAL_LOG.md` with notable decisions, tradeoffs, and interaction notes that would help a new researcher learn the workflow.
+
+## Forking Paths
+
+Track analytic forks and their rationale in `analysis/FORKING_PATHS.md`.

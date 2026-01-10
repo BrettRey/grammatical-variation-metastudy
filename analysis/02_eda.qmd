@@ -133,12 +133,12 @@ perc_realization <- gramm_var |>
 library(brms)
 
 priors <- c(
-  set_prior("normal(0, 1.5)", class = "Intercept", resp = "tested"),
-  set_prior("normal(0, 1.5)", class = "Intercept", resp = "foundcond"),
-  set_prior("normal(0, 1.0)", class = "b", resp = "tested"),
-  set_prior("normal(0, 1.0)", class = "b", resp = "foundcond"),
-  set_prior("exponential(1)", class = "sd", resp = "tested"),
-  set_prior("exponential(1)", class = "sd", resp = "foundcond")
+  set_prior("normal(0, 1.2)", class = "Intercept", resp = "tested"),
+  set_prior("normal(0, 1.2)", class = "Intercept", resp = "foundcond"),
+  set_prior("normal(0, 0.7)", class = "b", resp = "tested"),
+  set_prior("normal(0, 0.7)", class = "b", resp = "foundcond"),
+  set_prior("exponential(2)", class = "sd", resp = "tested"),
+  set_prior("exponential(2)", class = "sd", resp = "foundcond")
 )
 
 bf_tested <- bf(
@@ -188,12 +188,12 @@ fit_domain <- function(data, tested_var, found_var) {
   )
 
   priors_d <- c(
-    set_prior("normal(0, 1.5)", class = "Intercept", resp = "tested_d"),
-    set_prior("normal(0, 1.5)", class = "Intercept", resp = "foundcond_d"),
-    set_prior("normal(0, 1.0)", class = "b", resp = "tested_d"),
-    set_prior("normal(0, 1.0)", class = "b", resp = "foundcond_d"),
-    set_prior("exponential(1)", class = "sd", resp = "tested_d"),
-    set_prior("exponential(1)", class = "sd", resp = "foundcond_d")
+    set_prior("normal(0, 1.2)", class = "Intercept", resp = "tested_d"),
+    set_prior("normal(0, 1.2)", class = "Intercept", resp = "foundcond_d"),
+    set_prior("normal(0, 0.7)", class = "b", resp = "tested_d"),
+    set_prior("normal(0, 0.7)", class = "b", resp = "foundcond_d"),
+    set_prior("exponential(2)", class = "sd", resp = "tested_d"),
+    set_prior("exponential(2)", class = "sd", resp = "foundcond_d")
   )
 
   brm(

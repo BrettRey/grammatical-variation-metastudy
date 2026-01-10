@@ -5,7 +5,8 @@
 - `upstream/` is a git submodule pointing to the original dataset/analysis; treat as read-only.
 - `stan/` is reserved for Stan model files as they are introduced.
 - `output/` is for generated tables, figures, and rendered artifacts.
-- Root docs: `CLAUDE.md` (project brief), `STATUS.md` (progress log), and `PEDAGOGICAL_LOG.md` (teaching notes).
+- Root docs: `CLAUDE.md` (project brief), `STATUS.md` (progress log), `PEDAGOGICAL_LOG.md` (teaching notes).
+- Decision tracking: `analysis/FORKING_PATHS.md` logs analytic forks and choices.
 
 ## Build, Test, and Development Commands
 No centralized build system is defined; render Quarto notebooks directly.
