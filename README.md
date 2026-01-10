@@ -41,6 +41,10 @@ The data is also available as a [Google Sheet](https://docs.google.com/spreadshe
 └── README.md
 ```
 
+## Collaboration & Roles
+
+This repository is developed in a guided collaboration: Brett Reynolds directs the research and methodological decisions, while the AI coding agent implements most code changes and drafts analysis artifacts under that guidance.
+
 ## License
 
 The analysis code in this repository is released under the MIT License.

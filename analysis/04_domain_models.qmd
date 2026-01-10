@@ -1,0 +1,212 @@
+---
+title: "Domain-Specific Selection Models"
+author: "Brett Reynolds"
+date: "2026-01-10"
+format:
+  html:
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## Setup
+
+```{r}
+#| label: setup
+library(dplyr)
+library(readr)
+library(tidyr)
+library(tibble)
+library(stringr)
+library(here)
+library(brms)
+library(posterior)
+```
+
+## Load Data
+
+```{r}
+#| label: load-data
+gramm_var <- read_csv(here("analysis/gramm_var_prepped.csv"), show_col_types = FALSE) |>
+  mutate(
+    year_z = as.numeric(scale(year)),
+    variation_type_recode = factor(variation_type_recode),
+    journal = factor(journal),
+    paper_id = factor(paper_id),
+    author_id = factor(author_id),
+    language_id = factor(language_id)
+  )
+```
+
+## Helper Functions
+
+```{r}
+#| label: helpers
+build_formula <- function(data, response_name) {
+  predictors <- c()
+
+  if (nlevels(droplevels(data$variation_type_recode)) > 1) {
+    predictors <- c(predictors, "variation_type_recode")
+  }
+  if (nlevels(droplevels(data$journal)) > 1) {
+    predictors <- c(predictors, "journal")
+  }
+  if (sd(data$year_z, na.rm = TRUE) > 0) {
+    predictors <- c(predictors, "year_z")
+  }
+
+  re_terms <- c()
+  if (nlevels(droplevels(data$paper_id)) > 1) {
+    re_terms <- c(re_terms, "(1 | paper_id)")
+  }
+  if (nlevels(droplevels(data$author_id)) > 1) {
+    re_terms <- c(re_terms, "(1 | author_id)")
+  }
+  if (nlevels(droplevels(data$language_id)) > 1) {
+    re_terms <- c(re_terms, "(1 | language_id)")
+  }
+
+  rhs <- c("1", predictors, re_terms)
+  as.formula(paste(response_name, "~", paste(rhs, collapse = " + ")))
+}
+
+fit_domain <- function(data, tested_var, found_var, label, save_path) {
+  data_d <- data |>
+    mutate(
+      testedd = as.integer(.data[[tested_var]]),
+      foundd = as.integer(.data[[found_var]])
+    )
+
+  tested_formula <- build_formula(data_d, "testedd")
+
+  found_data <- data_d |>
+    filter(testedd == 1L) |>
+    mutate(
+      variation_type_recode = droplevels(variation_type_recode),
+      journal = droplevels(journal),
+      paper_id = droplevels(paper_id),
+      author_id = droplevels(author_id),
+      language_id = droplevels(language_id)
+    )
+
+  found_formula <- build_formula(found_data, "foundd")
+
+  priors_d <- c(
+    set_prior("normal(0, 1.0)", class = "Intercept"),
+    set_prior("normal(0, 0.5)", class = "b"),
+    set_prior("exponential(3)", class = "sd")
+  )
+
+  if (file.exists(save_path)) {
+    existing <- readRDS(save_path)
+    if (is.list(existing) && all(c("tested", "found") %in% names(existing))) {
+      return(existing)
+    }
+  }
+
+  fit_tested <- brm(
+    tested_formula,
+    data = data_d,
+    family = bernoulli(),
+    prior = priors_d,
+    chains = 2, iter = 2000, warmup = 1000, cores = 2, seed = 123,
+    control = list(adapt_delta = 0.99, max_treedepth = 12)
+  )
+
+  fit_found <- brm(
+    found_formula,
+    data = found_data,
+    family = bernoulli(),
+    prior = priors_d,
+    chains = 2, iter = 2000, warmup = 1000, cores = 2, seed = 123,
+    control = list(adapt_delta = 0.99, max_treedepth = 12)
+  )
+
+  fit <- list(tested = fit_tested, found = fit_found)
+  saveRDS(fit, save_path)
+  fit
+}
+
+summarize_or <- function(fit, stage, label) {
+  draws <- posterior::as_draws_df(fit)
+  cols <- grep("^b_", names(draws), value = TRUE)
+  if (length(cols) == 0) {
+    return(tibble())
+  }
+  tibble(term = cols) |>
+    mutate(
+      median = sapply(cols, function(cn) median(exp(draws[[cn]]))),
+      q2.5 = sapply(cols, function(cn) quantile(exp(draws[[cn]]), 0.025)),
+      q97.5 = sapply(cols, function(cn) quantile(exp(draws[[cn]]), 0.975))
+    ) |>
+    mutate(
+      term = str_replace(term, "^b_", ""),
+      response = stage,
+      domain = label
+    )
+}
+```
+
+## Fit Domain Models (Two-Stage)
+
+```{r}
+#| label: fit-domain-models
+fit_prod <- fit_domain(
+  gramm_var,
+  tested_var = "prod_tested",
+  found_var = "prod_found",
+  label = "production",
+  save_path = here("analysis/fit_domain_prod_regularizing.rds")
+)
+
+fit_perc <- fit_domain(
+  gramm_var,
+  tested_var = "perc_tested",
+  found_var = "perc_found",
+  label = "perception",
+  save_path = here("analysis/fit_domain_perc_regularizing.rds")
+)
+
+fit_meta <- fit_domain(
+  gramm_var,
+  tested_var = "meta_tested",
+  found_var = "meta_found",
+  label = "metalinguistic",
+  save_path = here("analysis/fit_domain_meta_regularizing.rds")
+)
+```
+
+## Fixed Effects (Odds Ratios)
+
+```{r}
+#| label: domain-or-table
+or_table <- bind_rows(
+  summarize_or(fit_prod$tested, "tested", "production"),
+  summarize_or(fit_prod$found, "foundcond", "production"),
+  summarize_or(fit_perc$tested, "tested", "perception"),
+  summarize_or(fit_perc$found, "foundcond", "perception"),
+  summarize_or(fit_meta$tested, "tested", "metalinguistic"),
+  summarize_or(fit_meta$found, "foundcond", "metalinguistic")
+) |>
+  mutate(term = recode(term, Intercept = "Intercept")) |>
+  arrange(domain, response, term)
+
+or_table
+```
+
+```{r}
+#| label: write-or-table
+#| eval: true
+write_lines("# Domain Model OR Table\n", here("analysis/domain_model_or_table.md"))
+
+table_out <- or_table |>
+  mutate(
+    estimate = sprintf("%.2f [%.2f, %.2f]", median, q2.5, q97.5)
+  ) |>
+  select(domain, response, term, estimate) |>
+  knitr::kable(format = "pipe")
+
+write_lines(table_out, here("analysis/domain_model_or_table.md"), append = TRUE)
+```

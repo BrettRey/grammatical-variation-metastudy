@@ -53,6 +53,8 @@ $$
 
 Correlation between selection and outcome is handled via **shared or correlated varying effects** (and, if needed, a custom Stan bivariate selection model).
 
+**Implementation note:** The brms multivariate approach with `foundcond` set to `NA` for untested rows drops complete cases, which collapses the selection model. A proper joint selection–outcome model likely requires custom Stan or an alternative formulation (e.g., ordinal 0/1/2) for the primary analysis.
+
 **Predictors (both stages):**
 - Variation type (realization vs order vs both)
 - Journal (2 levels)
@@ -71,6 +73,8 @@ Fit the same joint selection–outcome structure separately for each domain:
 - Metalinguistic behavior (`meta_tested`, `meta_found`)
 
 **Key question:** Is the evidence base structurally skewed toward production?
+
+**Implementation note:** brms multivariate models drop complete cases when a response is missing. For sparse domains (especially perception), this collapses predictors to single levels. Until a custom Stan selection model is implemented, domain-specific models will be fit as two-stage (tested on all rows; found among tested only).
 
 ### Model 3: Baseline Two-Stage Models (Sensitivity)
 

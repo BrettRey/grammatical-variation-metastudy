@@ -18,6 +18,11 @@ These commands require R with `dplyr`, `readr`, `stringr`, `tibble`, `tidyr`, an
 - If a task requires system-wide installs or `sudo`, pause and ask the user to run the command or confirm the method.
 If cloning fresh, initialize submodules: `git submodule update --init --recursive`.
 
+## Collaboration & Roles
+- Brett Reynolds provides research direction, approves methodological choices, and guides priorities.
+- The AI coding agent implements most code changes and drafts analysis artifacts under Brett’s guidance.
+- Keep this role split visible in repo docs and logs when appropriate.
+
 ## Coding Style & Naming Conventions
 - R code follows tidyverse conventions; prefer pipes and `snake_case`.
 - Use 2-space indentation in R/Quarto chunks.

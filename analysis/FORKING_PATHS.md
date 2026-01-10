@@ -78,3 +78,21 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 - **Impact:** Interpret journal effects cautiously; consider sensitivity runs.  
 - **Evidence/Link:** `analysis/EDA_SUMMARY.md`  
 - **Date:** 2026-01-10  
+
+### Domain-specific selection model implementation
+- **Status:** decided (provisional for overall model)  
+- **Options:** multivariate joint model with missing found; two-stage (tested then found|tested); ordinal 3-level outcome; custom Stan selection model  
+- **Chosen:** two-stage for domain-specific models  
+- **Rationale:** brms multivariate models with missing found responses use complete cases; in perception, this collapses variation type to a single level and errors. Two-stage models preserve selection across all rows.  
+- **Impact:** Domain-specific estimates do not model selection–outcome correlation; results should be interpreted as separate stages.  
+- **Evidence/Link:** `analysis/04_domain_models.qmd`, `analysis/domain_model_or_table.md`  
+- **Date:** 2026-01-10  
+
+### Primary joint model implementation in brms
+- **Status:** open  
+- **Options:** brms multivariate with missing found (complete-case); custom Stan selection model; ordinal 0/1/2 outcome; two-stage models with shared random effects  
+- **Chosen:** none yet (flagged issue)  
+- **Rationale:** brms complete-case handling drops untested rows, collapsing the selection submodel.  
+- **Impact:** Current joint-model results are provisional and should not be interpreted as selection effects.  
+- **Evidence/Link:** `analysis/fit_joint_regularizing.rds`, `analysis/00_analysis_plan.qmd`  
+- **Date:** 2026-01-10  

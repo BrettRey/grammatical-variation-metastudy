@@ -203,3 +203,27 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Store the paragraph only in `analysis/03_model_interpretation.qmd`.
 - **Evidence:** `analysis/RESULTS_WRITEUP.md`.
 - **Follow-ups:** Expand bullets into prose when drafting the manuscript.
+
+### 2026-01-10 — Domain-Specific Models (Two-Stage)
+- **Topic:** Domain-specific selection modeling
+- **Decision:** Fit two-stage models per domain (tested on full data; found conditional on tested subset) rather than a multivariate joint model.
+- **Rationale:** brms drops rows with missing responses in multivariate fits; for perception this collapses variation_type to a single level and fails model matrix construction. Two-stage fits preserve selection modeling for sparse domains.
+- **Alternatives:** Custom Stan joint selection model; ordinal 3-level outcome model.
+- **Evidence:** `analysis/04_domain_models.qmd`, `analysis/domain_model_or_table.md`.
+- **Follow-ups:** Revisit the overall “joint” model, which may have used complete cases only.
+
+### 2026-01-10 — Multivariate brms Missingness Check
+- **Topic:** Joint selection–outcome modeling
+- **Decision:** Flag the current multivariate brms joint model as provisional; it drops untested rows (complete-case), which undermines the tested submodel.
+- **Rationale:** Inspecting `fit_joint_regularizing.rds` shows only tested rows remain (tested == 1 everywhere), so the selection model is not identified.
+- **Alternatives:** Custom Stan joint selection model; ordinal 3-level outcome; explicit two-stage models.
+- **Evidence:** `analysis/fit_joint_regularizing.rds`, `analysis/00_analysis_plan.qmd` (implementation note).
+- **Follow-ups:** Refit the primary model with a structure that preserves untested rows.
+
+### 2026-01-10 — Collaboration Roles Clarified
+- **Topic:** Repo documentation
+- **Decision:** Make the collaboration roles explicit in `README.md`, `AGENTS.md`, and `CLAUDE.md`.
+- **Rationale:** Ensure the repository clearly indicates that Brett guides the work and the AI agent implements most code under that guidance.
+- **Alternatives:** Mention roles only in internal notes.
+- **Evidence:** `README.md`, `AGENTS.md`, `CLAUDE.md`.
+- **Follow-ups:** Keep role statements in sync across docs.

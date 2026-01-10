@@ -4,6 +4,11 @@
 
 This is a replication/reanalysis project. Deep analytical work is appropriate here.
 
+## Collaboration & Roles
+
+- Brett Reynolds provides research direction, approves methodological choices, and guides priorities.
+- The AI coding agent implements most code changes and drafts analysis artifacts under Brett’s guidance.
+
 ## Project Overview
 
 **Source:** MacKenzie, Laurel, and Mary Robinson. 2025. "Spelling out grammatical variation." In *English Sociosyntax: Theory, Evidence, Approaches*, ed. Daniel Duncan and Mary Robinson, 59-95. Berlin: De Gruyter Mouton.

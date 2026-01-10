@@ -5,7 +5,7 @@
 
 ## Current State
 
-Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated. Initial joint model fits run (diagnostics pending).
+Project initialized. Upstream repo cloned. Analysis plan drafted. Data prep rendered and prepped dataset generated. Domain-specific two-stage models fit and summarized; the multivariate “joint” model needs revisiting because brms complete-case handling drops untested rows.
 
 ## Origin
 
@@ -31,9 +31,9 @@ Gelman-style Bayesian reanalysis:
 
 - [ ] Exploratory data analysis
 - [ ] Identify clustering structure (how many papers, authors, languages?)
-- [ ] Prototype selection model in brms
-- [ ] Prototype outcome model
-- [ ] Joint model or sequential?
+- [x] Prototype selection model in brms (two-stage, domain-specific)
+- [x] Prototype outcome model (domain-specific)
+- [ ] Revisit overall joint model with a structure that keeps untested rows
 
 ## Session Log
 
@@ -45,6 +45,7 @@ Gelman-style Bayesian reanalysis:
 - Rendered `analysis/01_data_prep.qmd` and generated `analysis/gramm_var_prepped.csv`
 - Fit joint models (regularizing + centered priors); centered model refit with higher adapt_delta
 - Added interpretation/visualization notebook and OR summary table
+- Fit domain-specific two-stage models and generated OR table
 
 ## Connections to Other Work
 
