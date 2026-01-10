@@ -54,9 +54,9 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 - **Status:** decided  
 - **Options:** Normal(0,1.5) vs tighter; Exponential(1) vs Exponential(2); data-centered intercepts  
 - **Chosen:**  
-  - **Primary (agnostic):** Normal(0,1.2) intercepts, Normal(0,0.7) slopes, Exponential(2) SDs  
-  - **Sensitivity (centered):** Intercepts centered at logit(empirical tested / found rates), SD 0.7; same slopes/SDs  
-- **Rationale:** Prior predictive plots were too diffuse; tighten to reduce extreme implied rates and add a centered sensitivity check.  
+  - **Primary (agnostic):** Normal(0,1.0) intercepts, Normal(0,0.5) slopes, Exponential(3) SDs  
+  - **Sensitivity (centered):** Intercepts centered at logit(empirical tested / found rates), SD 0.7; slopes Normal(0,0.5); SDs Exponential(3)  
+- **Rationale:** Prior predictive plots still too diffuse; further tightening to reduce extreme implied rates.  
 - **Impact:** More regularization; transparency about dependence on baseline rates.  
 - **Evidence/Link:** `analysis/02_eda.qmd`  
 - **Date:** 2026-01-10  

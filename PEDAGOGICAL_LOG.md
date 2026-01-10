@@ -142,8 +142,8 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 
 ### 2026-01-10 — Priors Tightened After PPC
 - **Topic:** Prior regularization
-- **Decision:** Tighten priors to Normal(0,1.2) intercepts, Normal(0,0.7) slopes, Exponential(2) SDs.
-- **Rationale:** Prior predictive curves were too diffuse and allowed extreme rates; tighter priors improve stability.
+- **Decision:** Tighten priors to Normal(0,1.0) intercepts, Normal(0,0.5) slopes, Exponential(3) SDs.
+- **Rationale:** Prior predictive curves remained diffuse; further tightening improves stability.
 - **Alternatives:** Keep original priors; tighten only intercepts.
 - **Evidence:** `analysis/02_eda.qmd`, `analysis/FORKING_PATHS.md`.
 - **Follow-ups:** Re-run prior predictive checks and confirm plausibility.

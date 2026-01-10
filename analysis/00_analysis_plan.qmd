@@ -115,9 +115,9 @@ For interpretability checks, fit the two-stage models separately (selection then
 ## Priors
 
 Use weakly informative priors (regularizing, not subjective):
-- Fixed effects (standardized predictors): $\beta \sim \text{Normal}(0, 0.7)$ on log-odds scale
-- Intercepts: $\alpha \sim \text{Normal}(0, 1.2)$
-- Varying intercept SDs: $\sigma_u \sim \text{Exponential}(2)$
+- Fixed effects (standardized predictors): $\beta \sim \text{Normal}(0, 0.5)$ on log-odds scale
+- Intercepts: $\alpha \sim \text{Normal}(0, 1.0)$
+- Varying intercept SDs: $\sigma_u \sim \text{Exponential}(3)$
 - Correlations among varying effects: LKJ(2) prior (when modeled)
 
 ## Diagnostics

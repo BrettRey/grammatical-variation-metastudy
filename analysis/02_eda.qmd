@@ -138,21 +138,21 @@ p_tested <- mean(gramm_var$tested)
 p_found <- mean(gramm_var$found[gramm_var$tested == 1L])
 
 priors_agnostic <- c(
-  set_prior("normal(0, 1.2)", class = "Intercept", resp = "tested"),
-  set_prior("normal(0, 1.2)", class = "Intercept", resp = "foundcond"),
-  set_prior("normal(0, 0.7)", class = "b", resp = "tested"),
-  set_prior("normal(0, 0.7)", class = "b", resp = "foundcond"),
-  set_prior("exponential(2)", class = "sd", resp = "tested"),
-  set_prior("exponential(2)", class = "sd", resp = "foundcond")
+  set_prior("normal(0, 1.0)", class = "Intercept", resp = "tested"),
+  set_prior("normal(0, 1.0)", class = "Intercept", resp = "foundcond"),
+  set_prior("normal(0, 0.5)", class = "b", resp = "tested"),
+  set_prior("normal(0, 0.5)", class = "b", resp = "foundcond"),
+  set_prior("exponential(3)", class = "sd", resp = "tested"),
+  set_prior("exponential(3)", class = "sd", resp = "foundcond")
 )
 
 priors_centered <- c(
   set_prior(paste0("normal(", round(logit(p_tested), 3), ", 0.7)"), class = "Intercept", resp = "tested"),
   set_prior(paste0("normal(", round(logit(p_found), 3), ", 0.7)"), class = "Intercept", resp = "foundcond"),
-  set_prior("normal(0, 0.7)", class = "b", resp = "tested"),
-  set_prior("normal(0, 0.7)", class = "b", resp = "foundcond"),
-  set_prior("exponential(2)", class = "sd", resp = "tested"),
-  set_prior("exponential(2)", class = "sd", resp = "foundcond")
+  set_prior("normal(0, 0.5)", class = "b", resp = "tested"),
+  set_prior("normal(0, 0.5)", class = "b", resp = "foundcond"),
+  set_prior("exponential(3)", class = "sd", resp = "tested"),
+  set_prior("exponential(3)", class = "sd", resp = "foundcond")
 )
 
 bf_tested <- bf(
@@ -242,12 +242,12 @@ fit_domain <- function(data, tested_var, found_var) {
   )
 
   priors_d <- c(
-    set_prior("normal(0, 1.2)", class = "Intercept", resp = "tested_d"),
-    set_prior("normal(0, 1.2)", class = "Intercept", resp = "foundcond_d"),
-    set_prior("normal(0, 0.7)", class = "b", resp = "tested_d"),
-    set_prior("normal(0, 0.7)", class = "b", resp = "foundcond_d"),
-    set_prior("exponential(2)", class = "sd", resp = "tested_d"),
-    set_prior("exponential(2)", class = "sd", resp = "foundcond_d")
+    set_prior("normal(0, 1.0)", class = "Intercept", resp = "tested_d"),
+    set_prior("normal(0, 1.0)", class = "Intercept", resp = "foundcond_d"),
+    set_prior("normal(0, 0.5)", class = "b", resp = "tested_d"),
+    set_prior("normal(0, 0.5)", class = "b", resp = "foundcond_d"),
+    set_prior("exponential(3)", class = "sd", resp = "tested_d"),
+    set_prior("exponential(3)", class = "sd", resp = "foundcond_d")
   )
 
   brm(
