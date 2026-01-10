@@ -141,6 +141,7 @@ Use weakly informative priors (regularizing, not subjective):
 - **Year trend:** linear vs smooth.
 - **Selection structure:** joint vs two-stage.
 - **Prior scale:** tighter vs wider (e.g., `Normal(0, 0.7)` vs `Normal(0, 1.5)` for slopes).
+- **Intercept centering:** agnostic intercepts vs data-centered intercepts (sensitivity only).
 
 ## Timeline
 

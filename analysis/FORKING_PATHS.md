@@ -52,10 +52,12 @@ Purpose: track analytic decisions, alternatives, and their impact to reduce hidd
 
 ### Priors (scale + structure)
 - **Status:** decided  
-- **Options:** Normal(0,1.5) vs tighter; Exponential(1) vs Exponential(2); LKJ(2) correlations  
-- **Chosen:** Normal(0,1.2) intercepts, Normal(0,0.7) slopes, Exponential(2) SDs  
-- **Rationale:** Prior predictive plots were too diffuse; tighten to reduce extreme implied rates while staying weakly informative.  
-- **Impact:** More regularization; should stabilize selection/outcome estimation.  
+- **Options:** Normal(0,1.5) vs tighter; Exponential(1) vs Exponential(2); data-centered intercepts  
+- **Chosen:**  
+  - **Primary (agnostic):** Normal(0,1.2) intercepts, Normal(0,0.7) slopes, Exponential(2) SDs  
+  - **Sensitivity (centered):** Intercepts centered at logit(empirical tested / found rates), SD 0.7; same slopes/SDs  
+- **Rationale:** Prior predictive plots were too diffuse; tighten to reduce extreme implied rates and add a centered sensitivity check.  
+- **Impact:** More regularization; transparency about dependence on baseline rates.  
 - **Evidence/Link:** `analysis/02_eda.qmd`  
 - **Date:** 2026-01-10  
 

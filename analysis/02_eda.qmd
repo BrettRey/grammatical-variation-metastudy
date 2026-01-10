@@ -125,16 +125,30 @@ perc_realization <- gramm_var |>
 - Journal confound: order variables are almost entirely LVC (`r order_lvc` LVC vs `r order_jslx` JSlx).
 - Interpretation note: most of the variation appears in **selection (tested vs not)** rather than in outcomes once tested.
 
-## Joint Selection–Outcome Model Scaffold (Overall)
+## Prior Sensitivity: Agnostic vs Data-Centered
 
 ```{r}
-#| label: joint-model-scaffold
+#| label: prior-sensitivity
 #| eval: true
 library(brms)
 
-priors <- c(
+# Empirical baselines for data-centered intercepts (sensitivity check)
+logit <- function(p) log(p / (1 - p))
+p_tested <- mean(gramm_var$tested)
+p_found <- mean(gramm_var$found[gramm_var$tested == 1L])
+
+priors_agnostic <- c(
   set_prior("normal(0, 1.2)", class = "Intercept", resp = "tested"),
   set_prior("normal(0, 1.2)", class = "Intercept", resp = "foundcond"),
+  set_prior("normal(0, 0.7)", class = "b", resp = "tested"),
+  set_prior("normal(0, 0.7)", class = "b", resp = "foundcond"),
+  set_prior("exponential(2)", class = "sd", resp = "tested"),
+  set_prior("exponential(2)", class = "sd", resp = "foundcond")
+)
+
+priors_centered <- c(
+  set_prior(paste0("normal(", round(logit(p_tested), 3), ", 0.7)"), class = "Intercept", resp = "tested"),
+  set_prior(paste0("normal(", round(logit(p_found), 3), ", 0.7)"), class = "Intercept", resp = "foundcond"),
   set_prior("normal(0, 0.7)", class = "b", resp = "tested"),
   set_prior("normal(0, 0.7)", class = "b", resp = "foundcond"),
   set_prior("exponential(2)", class = "sd", resp = "tested"),
@@ -151,17 +165,57 @@ bf_found <- bf(
     (1 | paper_id) + (1 | author_id) + (1 | language_id)
 )
 
-fit_prior <- brm(
+fit_prior_agnostic <- brm(
   bf_tested + bf_found + set_rescor(FALSE),
   data = gramm_var,
   family = bernoulli(),
-  prior = priors,
+  prior = priors_agnostic,
   sample_prior = "only",
   chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
 )
 
-pp_check(fit_prior, resp = "tested")
-pp_check(fit_prior, resp = "foundcond")
+fit_prior_centered <- brm(
+  bf_tested + bf_found + set_rescor(FALSE),
+  data = gramm_var,
+  family = bernoulli(),
+  prior = priors_centered,
+  sample_prior = "only",
+  chains = 2, iter = 1000, warmup = 500, cores = 2, seed = 123
+)
+
+pp_check(fit_prior_agnostic, resp = "tested")
+pp_check(fit_prior_agnostic, resp = "foundcond")
+pp_check(fit_prior_centered, resp = "tested")
+pp_check(fit_prior_centered, resp = "foundcond")
+
+summarize_prior_rates <- function(fit, resp) {
+  ep <- posterior_epred(fit, resp = resp)
+  rates <- rowMeans(ep)
+  quantile(rates, c(0.05, 0.5, 0.95))
+}
+
+tibble(
+  prior = c("agnostic", "agnostic", "centered", "centered"),
+  response = c("tested", "foundcond", "tested", "foundcond"),
+  q05 = c(
+    summarize_prior_rates(fit_prior_agnostic, "tested")[1],
+    summarize_prior_rates(fit_prior_agnostic, "foundcond")[1],
+    summarize_prior_rates(fit_prior_centered, "tested")[1],
+    summarize_prior_rates(fit_prior_centered, "foundcond")[1]
+  ),
+  q50 = c(
+    summarize_prior_rates(fit_prior_agnostic, "tested")[2],
+    summarize_prior_rates(fit_prior_agnostic, "foundcond")[2],
+    summarize_prior_rates(fit_prior_centered, "tested")[2],
+    summarize_prior_rates(fit_prior_centered, "foundcond")[2]
+  ),
+  q95 = c(
+    summarize_prior_rates(fit_prior_agnostic, "tested")[3],
+    summarize_prior_rates(fit_prior_agnostic, "foundcond")[3],
+    summarize_prior_rates(fit_prior_centered, "tested")[3],
+    summarize_prior_rates(fit_prior_centered, "foundcond")[3]
+  )
+)
 ```
 
 ## Joint Models by Domain (Scaffold)
