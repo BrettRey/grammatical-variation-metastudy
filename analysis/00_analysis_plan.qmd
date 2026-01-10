@@ -37,68 +37,57 @@ A multilevel Bayesian approach addresses all three.
 
 ## Model Architecture
 
-### Model 1: Selection Model
+### Model 1: Joint Selection–Outcome Model (Primary)
 
-What predicts whether a variable gets tested for social significance?
+We model selection into testing and the outcome of testing jointly to capture selection bias directly.
 
+**Selection (tested vs not analyzed):**
 $$
-\text{logit}(P(\text{tested}_i)) = \alpha + \beta_{\text{type}} \cdot \text{variation\_type}_i + u_{\text{paper}[i]} + u_{\text{author}[i]} + u_{\text{language}[i]} + u_{\text{journal}[i]}
+\text{logit}(P(\text{tested}_i)) = \alpha_s + \beta_s X_i + u^{(s)}_{\text{paper}[i]} + u^{(s)}_{\text{author}[i]} + u^{(s)}_{\text{language}[i]} + u^{(s)}_{\text{journal}[i]}
 $$
 
-Where $u$ terms are varying intercepts drawn from normal distributions.
+**Outcome (found vs null | tested):**
+$$
+\text{logit}(P(\text{found}_i \mid \text{tested}_i)) = \alpha_o + \beta_o X_i + u^{(o)}_{\text{paper}[i]} + u^{(o)}_{\text{author}[i]} + u^{(o)}_{\text{language}[i]} + u^{(o)}_{\text{journal}[i]}
+$$
 
-**Outcome:** Binary (tested vs not tested)
+Correlation between selection and outcome is handled via **shared or correlated varying effects** (and, if needed, a custom Stan bivariate selection model).
 
-**Predictors:**
+**Predictors (both stages):**
 - Variation type (realization vs order vs both)
-- Journal
-- Year (possibly as smooth term)
+- Journal (2 levels)
+- Year (linear)
 
-**Random effects:**
+**Random effects (both stages):**
 - Paper
 - Author
 - Language
 
-### Model 2: Outcome Model (conditional on tested)
+### Model 2: Domain-Specific Joint Models
 
-Given that a variable was tested, what predicts finding social significance?
-
-**Option A: Binary**
-$$
-\text{logit}(P(\text{found}_i | \text{tested}_i)) = \alpha + \beta X_i + u_{\text{paper}[i]} + \ldots
-$$
-
-**Option B: Multinomial** (preferred)
-
-Model the full outcome: not analyzed / null / found
-
-This is a category-specific model where "not analyzed" is absorbed by the selection model, leaving null vs found conditional on testing.
-
-### Model 3: Domain-Specific Models
-
-Separate (or partially pooled) models for:
-- Production
-- Perception
-- Metalinguistic behavior
+Fit the same joint selection–outcome structure separately for each domain:
+- Production (`prod_tested`, `prod_found`)
+- Perception (`perc_tested`, `perc_found`)
+- Metalinguistic behavior (`meta_tested`, `meta_found`)
 
 **Key question:** Is the evidence base structurally skewed toward production?
 
-### Model 4: Joint Selection-Outcome Model
+### Model 3: Baseline Two-Stage Models (Sensitivity)
 
-Potentially model selection and outcome jointly to account for correlation between them (Heckman-style selection correction, Bayesian version).
+For interpretability checks, fit the two-stage models separately (selection then outcome) without explicit correlation. Use these only for comparison against the joint model.
 
 ## Implementation
 
 ### Software
-- `brms` for multilevel models
-- `cmdstanr` if custom Stan needed
+- `brms` for multilevel joint models where possible
+- `cmdstanr` if custom Stan is needed for the joint selection specification
 - `tidybayes` for posterior visualization
 
 ### Workflow
 1. Data prep and EDA
-2. Fit selection model
-3. Fit outcome model (conditional)
-4. Fit domain-specific models
+2. Fit joint selection–outcome model (overall)
+3. Fit domain-specific joint models
+4. Fit baseline two-stage models for sensitivity
 5. Compare to original findings
 6. Sensitivity analysis
 
@@ -118,16 +107,23 @@ Potentially model selection and outcome jointly to account for correlation betwe
    - Original: realization variables more often show social significance than order variables
    - Does this survive controlling for clustering?
 
+## Predictors & Recodes (Explicit)
+
+- **Variation type recode:** if `variation.type` contains `", order"` → `both`; else if it contains `form` or `omission` → `realization`; else `order`.
+- **Year:** use a linear term (centered and scaled) for the main models.
+
 ## Priors
 
 Use weakly informative priors (regularizing, not subjective):
 - Fixed effects: $\beta \sim \text{Normal}(0, 2.5)$ on log-odds scale
+- Intercepts: $\alpha \sim \text{Normal}(0, 5)$
 - Varying intercept SDs: $\sigma_u \sim \text{Exponential}(1)$
+- Correlations among varying effects: LKJ(2) prior (when modeled)
 
 ## Diagnostics
 
 - Posterior predictive checks
-- LOO-CV for model comparison
+- LOO-CV for model comparison, with Pareto-$k$ diagnostics (trigger `reloo` if needed)
 - Trace plots, $\hat{R}$, ESS
 
 ## Timeline

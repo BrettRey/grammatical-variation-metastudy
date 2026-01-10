@@ -28,3 +28,50 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
 - **Alternatives:** Keep notes ad hoc in notebooks.
 - **Evidence:** `AGENTS.md`, `CLAUDE.md` updates noting log usage.
 - **Follow-ups:** Add entries when we resolve model-structure choices or data prep tradeoffs.
+
+### 2026-01-10 — Joint Selection Model Chosen
+- **Topic:** Model structure
+- **Decision:** Use a joint selection–outcome model as the primary approach, with baseline two-stage models for sensitivity checks.
+- **Rationale:** Directly models selection into testing and allows correlation between selection and outcome.
+- **Alternatives:** Single multinomial model; uncorrelated two-stage models only.
+- **Evidence:** `analysis/00_analysis_plan.qmd` (Model Architecture section).
+- **Follow-ups:** Decide whether `brms` can express the correlation structure or if custom Stan is required.
+
+### 2026-01-10 — Domain-Specific Selection
+- **Topic:** Evidence domains
+- **Decision:** Fit separate joint models for production, perception, and metalinguistic behavior, each with its own selection indicator.
+- **Rationale:** Allows explicit tests of selection bias toward production studies.
+- **Alternatives:** One global selection model with domain-specific outcomes.
+- **Evidence:** `analysis/00_analysis_plan.qmd` (Domain-Specific Models section).
+- **Follow-ups:** Confirm data sufficiency in each domain after EDA.
+
+### 2026-01-10 — Linear Year Effect
+- **Topic:** Time trend
+- **Decision:** Model year as a linear (centered/scaled) predictor in the main analysis.
+- **Rationale:** Parsimonious default before testing more flexible trends.
+- **Alternatives:** Spline-based smooths; decade bins.
+- **Evidence:** `analysis/00_analysis_plan.qmd` (Predictors & Recodes).
+- **Follow-ups:** Add a sensitivity model with a smooth if linear fit is inadequate.
+
+### 2026-01-10 — Priors Scaffolding (To Be Filled)
+- **Topic:** Prior specification
+- **Decision:** Establish a structured checklist for priors before fitting models.
+- **Rationale:** Prevent silent defaults and make modeling choices teachable.
+- **Alternatives:** Rely on package defaults.
+- **Evidence:** `analysis/00_analysis_plan.qmd` (Priors section).
+- **Follow-ups:** Fill in after EDA with:
+  - Outcome scale choice (log-odds) and interpretation check
+  - Fixed-effect prior scale justification (e.g., OR ranges)
+  - Random-effect SD priors and correlation LKJ choice
+  - Sensitivity runs (wider/narrower priors)
+
+### 2026-01-10 — LOO-CV Scaffolding (To Be Filled)
+- **Topic:** Model comparison
+- **Decision:** Use PSIS-LOO with diagnostic thresholds and an explicit fallback.
+- **Rationale:** Avoid over-trusting unstable LOO estimates.
+- **Alternatives:** WAIC; k-fold CV.
+- **Evidence:** `analysis/00_analysis_plan.qmd` (Diagnostics section).
+- **Follow-ups:** Fill in after first model fits with:
+  - Pareto-k thresholds and handling (e.g., `reloo`)
+  - Comparisons to run (selection-only vs joint; linear vs smooth year)
+  - Reporting template for LOO results and effective sample sizes
