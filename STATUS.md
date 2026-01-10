@@ -112,6 +112,9 @@ Gelman-style Bayesian reanalysis:
   - Standardised year gloss to "per SD" and cleaned up table interpretation.
   - Refined abstract for precision ("less available", "reported success rates").
   - Softened Methods tone ("simulate" vs "fake") and corrected spelling (regularising).
+- **2026-01-10 — Post-Session Refinements:**
+  - Combined PPC figures into a single page (Figure 1: `height=0.25\textheight`) to solve layout overflow.
+  - Rewrote `learnings.tex` to mine the `PEDAGOGICAL_LOG.md` for broader insights (Model as Argument, Simulation as Critique) while strictly adhering to house style and voice constraints ("I" not "we").
 - Formatted lining numbers with commas (4,000).
 
 ## Connections to Other Work
