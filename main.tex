@@ -71,21 +71,19 @@ One feature of Bayesian models with random effects is \term{partial pooling}: es
 \subsection{Model fit and predictive checks}
 Before interpreting the results, does the model fit the data well? Posterior predictive checks (PPCs) answer this by simulating new datasets from the fitted model and asking whether they resemble the observed data. Here, the replicated tested and found rates cluster around the observed rates overall and within journal and variation-type strata (Figure~\ref{fig:ppc-combined}). The observed rates fall well inside the predictive distributions, suggesting that the model captures the main selection structure without apparent overfitting. Population-level predicted probabilities make the selection patterns easier to read (Figure~\ref{fig:probabilities}).
 
-\begin{figure}[p]
-  \centering
   \begin{subfigure}{\textwidth}
     \centering
     \includegraphics[height=0.25\textheight,keepaspectratio]{ppc-overall.png}
-    \caption{Overall tested and found rates. Each histogram shows rates from 500 simulated datasets; vertical lines mark the observed rates.}
+    \caption{Overall checks}
     \label{fig:ppc-overall}
   \end{subfigure}
   \begin{subfigure}{\textwidth}
     \centering
     \includegraphics[height=0.25\textheight,keepaspectratio]{ppc-stratified.png}
-    \caption{Stratified checks by journal and variation type. The same logic applies within subgroups: if observed rates (vertical lines) fall inside the simulated distributions, the model captures the subgroup structure.}
+    \caption{Stratified checks}
     \label{fig:ppc-stratified}
   \end{subfigure}
-  \caption{Posterior predictive checks (PPCs). Both overall (a) and stratified (b) checks show that the model simulates data consistent with the observed patterns.}
+  \caption{Posterior predictive checks (PPCs). (a) Overall tested and found rates; vertical lines mark observed rates. (b) Stratified checks by journal and variation type. In both cases, observed rates fall within the simulated distributions, suggesting good model fit.}
   \label{fig:ppc-combined}
 \end{figure}
 
