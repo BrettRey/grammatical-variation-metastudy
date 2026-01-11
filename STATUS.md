@@ -117,6 +117,17 @@ Gelman-style Bayesian reanalysis:
   - Rewrote `learnings.tex` to mine the `PEDAGOGICAL_LOG.md` for broader insights (Model as Argument, Simulation as Critique) while strictly adhering to house style and voice constraints ("I" not "we").
 - Formatted lining numbers with commas (4,000).
 
+### 2026-01-10 (Claude/Gemini — Final Polish)
+- Fixed figure layout: separate Figures 1–3 (PPC overall, PPC stratified, Probabilities)
+- Added Table 3 (model comparison) with siunitx decimal alignment
+- Accessibility: simplified "brms two-stage baseline" and prior specifications
+- Anchored all quantitative claims with figure/table/appendix references
+- Updated probability ranges to match model (92–95%)
+- Removed p-value contamination (replaced χ²/p with descriptive "9-point gap")
+- Removed "the present analysis" academic language → direct "I" voice
+- Framework-neutral phrasing for Minimalist constructs (Spell-Out/Narrow Syntax removed)
+- Logged p-value lesson in PEDAGOGICAL_LOG.md
+
 ## Connections to Other Work
 
 - **Boundary phenomena** (reciprocals paper, HPC book): The question of whether grammatical variation is "different" from phonological variation is a boundary question
