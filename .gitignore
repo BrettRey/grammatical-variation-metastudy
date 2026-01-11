@@ -33,7 +33,6 @@ analysis/*.pdf
 *.fdb_latexmk
 *.fls
 *.xdv
-main.pdf
 *.synctex.gz
 
 # OS
