@@ -4,7 +4,7 @@
 \input{.house-style/preamble.tex}
 \input{local-preamble.tex}
 
-\title{The obstacle is the way:\\ \emph{Contra} the efficiency narrative in AI writing}
+\title{The ``Expert Tool'' Trap:\\ Notes on an AI-assisted Methods Paper}
 \author{Brett Reynolds \orcidlink{0000-0003-0073-7195}\\
   Humber Polytechnic \& University of Toronto\\
   \href{mailto:brett.reynolds@humber.ca}{brett.reynolds@humber.ca}}
@@ -13,41 +13,54 @@
 \begin{document}
 \maketitle
 
-\begin{abstract}
-Writing with AI is usually promised as a shortcut; I found it most useful as an obstacle course. Over a 12-hour collaborative session, a human linguist and an AI agent refined a meta-study on grammatical variation. The breakthrough came not from asking the model to generate text, but from forcing it to simulate hostile peer reviewers ("Simulated Advisory Board") and audit its own "hallucinated competences" against a rigorous pedagogical log. By treating the AI as an "epistemic adversary" rather than a copywriter, I engineered a paper that is tighter, funnier, and more honest than either intelligence could have produced alone.
-\end{abstract}
+\section{Introduction}
 
-\section{The diff as dialogue}
-The blank page is no longer the enemy. The enemy is plausible mediocrity. This workflow inverted the standard LLM paradigm: rather than prompting for volume ("write 500 words on X"), I prompted for friction. I treated every \texttt{git diff} not as an update, but as a transcript of a negotiation.
+This document reflects on the process of writing \emph{Grammatical Variation Meta-Study} with an AI agent. The initial goal was efficiency: delegate the ``boring'' parts of Bayesian modeling and LaTeX formatting to a machine. The reality was less about acceleration and more about collision. The agent did not simply implement a pre-existing plan; it exposed the fragility of that plan through its own failures.
+
+This log details three specific crises---technical, epistemic, and rhetorical---that forced a deviation from the standard research workflow. It suggests that the value of AI in research is not as a \mention{force multiplier} but as an \mention{adversarial partner}.
+
+\section{The ``Expert Tool'' Trap (Technical)}
+
+The most dangerous moment in the project occurred on January 10, when I attempted to fit a joint selection--outcome model using the industry-standard package \texttt{brms}. 
+
+The logic was sound: I needed to model the probability of a variable being \term{tested} ($y_1$) and, conditional on that, the probability of it being \term{found} ($y_2$). A multivariate model seemed the obvious choice. The agent wrote the code, the model compiled, the chains converged ($R < 1.01$), and estimates were precise.
+
+They were also wrong.
+
+As noted in the pedagogical log (2026-01-10 \mention{Multivariate brms Missingness Check}), the \texttt{brms} package, essentially an expert system for regression, assumes by default that missing values in outcomes should be dropped (listwise deletion). Because $y_2$ is undefined for untested variables, the package silently dropped all rows where $y_1 = 0$. The resulting model was mathematically valid but scientifically vacuous: it modeled selection only among those already selected.
+
+The agent, trained to produce ``correct'' code, produced code that was syntactically perfect but semantically fatal. The fix was not better prompting. It was a retreat to first principles: writing a custom Stan model to explicitly define the likelihood for the untested case. The agent could write the Stan code, but only after the human identified that the ``easy'' path was a dead end.
+
+\section{Simulation as Critique (Epistemic)}
+
+The second crisis was conceptual. The early drafts of the paper framed the high success rate of grammatical variables as evidence of ``human sociolinguistic capacity.'' It was a celebration of the field's ability to find meaning everywhere.
+
+To test this framing, I ran a \mention{Simulated Reviewer} session (2026-01-10 \mention{Simulated Reviewer Critiques}), generating feedback from personas representing distinct epistemic communities (e.g., \mention{Zimmer} for variationist theory, \mention{Gelman} for statistics).
+
+The critique was blistering. The \mention{Godfrey-Smith} persona pointed out a fundamental confusion between the map and the territory:
+\begin{quote}
+``You are confusing the capacity of the organism with the filter of the institution. A high success rate in published papers doesn't mean language is saturated with social meaning; it means researchers are rational actors who don't publish nulls.''
+\end{quote}
+
+This was not a copy-edit. It was a refutation. It forced a rewrite of the Abstract and Discussion (2026-01-10 \mention{Drafting Learnings Reflection}), shifting the claim from a linguistic discovery to a sociological one. The AI, usually a compliance machine, became a mechanism for estrangement, allowing me to see the paper's flaws through an outsider's eyes before they reached a human reviewer.
+
+\section{Rhetoric as Debugging (Synthesis)}
+
+The final lesson was that code and prose are not separate domains. In trying to explain the selection model to a general audience, I found myself relying on lazy academic connectives: \mention{Thus}, \mention{Therefore}, \mention{It is worth noting}.
+
+The agent's enforcement of ``plain style'' (2026-01-10 \mention{Plain Style Enforcement}) revealed that these connectives were often masking logical gaps. If a sentence couldn't stand without a \mention{Therefore}, the logical connection usually wasn't in the data.
+
+I replaced these with classical rhetorical figures. For example, to sharpen the distinction between the two stages of the model, I used \term{symploce} (repeating the start and end of clauses):
 \begin{itemize}
-    \item \textbf{The Lesson:} Don't use the AI to write the text; use the text to rewrite the AI. The \enquote{Forking Paths} log prevented hidden flexibility by forcing me to document every abandoned alternative.
+    \item \emph{Selection asks}: Among all possible variables, which are chosen for study?
+    \item \emph{Outcome asks}: Among those chosen, which are reported as significant?
 \end{itemize}
+This was not decoration. It was debugging. The constraint of the rhetorical form forced a precision in the conceptual structure that the code had missed.
 
-\section{Simulation as critique (getting Zimmered)}
-I convened a \enquote{Simulated Advisory Board} featuring the ghosts of scientific rigor past and present: Carl Zimmer (for narrative stakes) and Peter Godfrey-Smith (for epistemic hygiene). When the draft claimed I was measuring \enquote{capacity,} the simulated Zimmer didn't buy it. He demanded to know if I was just measuring \enquote{what gets printed.} This wasn't just a style edit; it was an epistemic rescue mission.
-\begin{itemize}
-    \item \textbf{The Lesson:} A mirror that always flatters you is useless. A mirror that shows you your fly is open is invaluable. Use the AI to simulate the reader who wants you to fail.
-\end{itemize}
+\section{Conclusion: The ``Sudo'' Boundary}
 
-\section{Model as Argument}
-The pedagogical log records the pivotal moment when I abandoned the standard \texttt{brms} interface. Why? Because it dropped rows with missing outcomes, silently destroying the selection model. I had to write custom Stan code not for "power," but for \emph{identifiability}. This technical decision became the paper's central argument: you cannot model what you cannot see.
-\begin{itemize}
-    \item \textbf{The Lesson:} The code is not just a tool; it is a philosophical position. If the default tool hides the selection mechanism, build a new tool.
-\end{itemize}
+The project concluded with a minor operational check: the agent paused before running a \texttt{sudo} command (2026-01-10 \mention{Privileged Actions Check-In}). This boundary remains the best metaphor for the collaboration. The agent can suggest, code, simulated, and critique. But it cannot start the machine, and it cannot sign the paper.
 
-\section{Rhetoric is engineering}
-I stopped treating style as a coat of paint and started treating it as load-bearing architecture. \term{Chiasmus}, \term{isocolon}, and \term{ring composition} weren't added for decoration; they were used to lock the argument in place. If the sentence structure doesn't balance, the thought probably doesn't either.
-\begin{itemize}
-    \item \textbf{The Lesson:} You can debug a paragraph's rhythm with the same precision you debug its code. A sentence that falls flat is a logic error.
-\end{itemize}
-
-\section{The tyranny of the preamble}
-Nothing disciplined the model effectively as the house style. By enforcing Canadian spelling, Oxford \enquote{-ize} suffixes, and semantic markup like \texttt{\textbackslash olang} and \texttt{\textbackslash term}, I broke the LLM's tendency toward \enquote{Corporate American Default.} Constraints are not limits; they are definitions. Without them, the voice is effectively null.     
-\begin{itemize}
-    \item \textbf{The Lesson:} Define your constraints or be defined by your training data.
-\end{itemize}
-
-\section*{Acknowledgments}
-I thank the Google DeepMind team for the \enquote{Antigravity} agent used in drafting this paper. I take responsibility in both.
+The efficiency narrative promises that AI will do the work. The reality of this project was that AI created \emph{more} work---more code to check, more critiques to answer, more drafts to refine. But it was better work. The paper is more rigorous, more humble, and more true than the one I would have written alone.
 
 \end{document}

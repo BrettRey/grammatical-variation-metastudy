@@ -56,7 +56,7 @@ Readers familiar with mixed-effects logistic regression~-- the workhorse of vari
 
 Predictors in both stages are journal, variation type, and year. Year is $z$-scored (centred and scaled), so year odds ratios represent the change associated with a one-standard-deviation increase in publication year (SD $\approx$ 9.6 years in this corpus). Random intercepts for paper, first author, and language account for clustering, and correlations across stages allow the same paper or author to influence both testing and findings.
 
-The model is fit in Stan, a probabilistic programming language for Bayesian inference. Priors are regularising: Normal$(0, 1.0)$ for intercepts, Normal$(0, 0.5)$ for slopes, Exponential$(3)$ for random-effect standard deviations, and LKJ$(2)$ for correlation matrices. A sensitivity run centres intercept priors on observed marginal rates. Sampling uses four chains, \liningnums{4,000} iterations (\liningnums{2,000} warmup), and a brms two-stage baseline provides comparison.
+The model is fit in Stan, a probabilistic programming language for Bayesian inference. Priors are regularising (weakly informative), discouraging extreme estimates while remaining flexible enough to follow the data; full specifications appear in Appendix~A. Sampling uses four chains, \liningnums{4,000} iterations (\liningnums{2,000} warmup), and a separate two-stage model (fitting selection and outcome independently) provides comparison.
 
 \subsection{Reading the output}
 Results are presented as odds ratios (ORs) and predicted probabilities. An OR of 2 means twice the odds; an OR of 0.5 means half the odds. Odds ratios are notoriously hard to intuit~-- and often make readers wish for predicted probabilities~-- so I provide those too (Figure~\ref{fig:probabilities}). A 95\% CrI is an interval containing 95\% of the posterior probability mass. Rather than focusing on whether an interval \enquote{excludes 1}, I emphasize the predictive implications: how much does the probability of testing or finding an effect change when shifting from realization to order variables? All fixed effects are treatment-coded with JSlx and \term{both} as reference levels, and year centred at the corpus mean.
@@ -69,22 +69,20 @@ One feature of Bayesian models with random effects is \term{partial pooling}: es
 \section{Results}
 
 \subsection{Model fit and predictive checks}
-Before interpreting the results, does the model fit the data well? Posterior predictive checks (PPCs) answer this by simulating new datasets from the fitted model and asking whether they resemble the observed data. Here, the replicated tested and found rates cluster around the observed rates overall and within journal and variation-type strata (Figure~\ref{fig:ppc-combined}). The observed rates fall well inside the predictive distributions, suggesting that the model captures the main selection structure without apparent overfitting. Population-level predicted probabilities make the selection patterns easier to read (Figure~\ref{fig:probabilities}).
+Before interpreting the results, does the model fit the data well? Posterior predictive checks (PPCs) answer this by simulating new datasets from the fitted model and asking whether they resemble the observed data. Here, the replicated tested and found rates cluster around the observed rates overall (Figure~\ref{fig:ppc-overall}) and within journal and variation-type strata (Figure~\ref{fig:ppc-stratified}). The observed rates fall well inside the predictive distributions, suggesting that the model captures the main selection structure without apparent overfitting. Population-level predicted probabilities make the selection patterns easier to read (Figure~\ref{fig:probabilities}).
 
-  \begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[height=0.25\textheight,keepaspectratio]{ppc-overall.png}
-    \caption{Overall checks}
-    \label{fig:ppc-overall}
-  \end{subfigure}
-  \begin{subfigure}{\textwidth}
-    \centering
-    \includegraphics[height=0.25\textheight,keepaspectratio]{ppc-stratified.png}
-    \caption{Stratified checks}
-    \label{fig:ppc-stratified}
-  \end{subfigure}
-  \caption{Posterior predictive checks (PPCs). (a) Overall tested and found rates; vertical lines mark observed rates. (b) Stratified checks by journal and variation type. In both cases, observed rates fall within the simulated distributions, suggesting good model fit.}
-  \label{fig:ppc-combined}
+\begin{figure}[p]
+  \centering
+  \includegraphics[height=0.35\textheight,keepaspectratio]{ppc-overall.png}
+  \caption{Overall posterior predictive check. Each histogram shows rates from 200 simulated datasets; vertical lines mark the observed rates. If the observed rates fall inside the predictive distribution, the model captures the data generating process.}
+  \label{fig:ppc-overall}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[height=0.35\textheight,keepaspectratio]{ppc-stratified.png}
+  \caption{Stratified posterior predictive checks by journal and variation type. The same logic applies within subgroups: if observed rates (vertical lines) fall inside the simulated distributions, the model captures the subgroup structure.}
+  \label{fig:ppc-stratified}
 \end{figure}
 
 \begin{figure}[t]
@@ -116,14 +114,43 @@ Year (per SD $\approx$ 9.6 years) & 1.65 & [1.04, 2.67] \\
 Testing varies notably by journal, variation type, and year. First, LVC is less likely to test variables than JSlx. In plain terms, variables in LVC have about one-third the odds of being tested for social significance compared to JSlx. Second, as Table~\ref{tab:selection_estimates} shows, realization variables are more likely to be tested than the \enquote{both} reference category (OR $\approx$ 2.33), while order variables trend lower (OR $\approx$ 0.50) with substantial uncertainty. Taken together, the posterior favours higher testing odds for realization than for order, but the order estimate is imprecise. Finally, testing increases over time (OR $\approx$ 1.65); per SD ($\approx$ 9.6 years), testing odds increase by about 65\%.
 
 \subsection{Outcome (found \texorpdfstring{$\mid$}{|} tested)}
-Conditional on testing, success rates are high and comparable across types. The probability of finding social significance is high (approximately 88--94\% across subgroups) and shows wide overlap across journals and variation types. Outcome effects have intervals that span no effect, consistent with selection rather than capacity as the bottleneck. Wide credible intervals in sparse categories~-- order variables, perception and metalinguistic domains~-- reflect data limitations, not absence of effect. Because \enquote{found} tracks what is reported in print, these high success rates should be read as properties of the published record (and its filters), not as direct estimates of underlying social-meaning capacity.
+Conditional on testing, success rates are high and comparable across types. The probability of finding social significance is high (approximately 92--95\% across subgroups; Figure~\ref{fig:probabilities}) and shows wide overlap across journals and variation types. Outcome effects have intervals that span no effect, consistent with selection rather than capacity as the bottleneck. Wide credible intervals in sparse categories~-- order variables, perception and metalinguistic domains~-- reflect data limitations, not absence of effect. Because \enquote{found} tracks what is reported in print, these high success rates should be read as properties of the published record (and its filters), not as direct estimates of underlying social-meaning capacity.
 
 \subsection{Robustness}
 A good analysis shouldn't depend on arbitrary modelling choices. Several robustness checks confirm that the main findings are stable:
 
-The brms two-stage baseline yields the same qualitative pattern: selection effects are stable, outcome effects are weak. The centred-intercept sensitivity run~-- which uses priors centred on observed rates rather than agnostic priors~-- reproduces the same conclusions.
+The separate two-stage model yields the same qualitative pattern (Table~\ref{tab:comparison}): selection effects are stable, outcome effects are weak. The centred-intercept sensitivity run~-- which uses priors centred on observed rates rather than agnostic priors~-- reproduces the same conclusions.
 
-An extended model adds a journal $\times$ variation-type interaction in the selection stage. If institutional framing requirements drive selection, JSlx might show a larger gap between realization and order than LVC. The interaction coefficients represent the multiplicative change in the LVC effect for each variation type relative to the reference (both). These coefficients have wide intervals spanning no effect (order:LVC OR $\approx 0.54$, 95\% CrI 0.23--1.29; realization:LVC OR $\approx 0.66$, 95\% CrI 0.30--1.47), so the data don't clearly support differential selection by journal.
+\begin{table}[t]
+  \centering
+  \caption{Odds ratio comparison: Joint model vs. separate two-stage model. Estimates are posterior medians [95\% CrI]. Both models show the same qualitative pattern: selection effects replicate; outcome effects are weak and uncertain.}
+  \label{tab:comparison}
+  \small
+  \begin{tabular}{ll 
+      S[table-format=2.2]@{\,[}r@{,\,}S[table-format=2.2]@{]}
+      @{\quad}
+      S[table-format=2.2]@{\,[}r@{,\,}S[table-format=2.2]@{]}}
+    \toprule
+    & & \multicolumn{3}{c}{Joint model} & \multicolumn{3}{c}{Two-stage model} \\
+    \cmidrule(lr){3-5} \cmidrule(lr){6-8}
+    Stage & Predictor & {OR} & {Lo} & {Hi} & {OR} & {Lo} & {Hi} \\
+    \midrule
+    Tested & Intercept            & 5.48  & 2.07 & 14.75 & 7.71  & 2.50 & 25.36 \\
+           & LVC (vs JSlx)        & 0.37  & 0.17 & 0.83  & 0.30  & 0.14 & 0.68  \\
+           & Order (vs Both)      & 0.50  & 0.21 & 1.17  & 0.46  & 0.19 & 1.11  \\
+           & Realization (vs Both)& 2.33  & 1.12 & 4.89  & 1.87  & 0.84 & 4.05  \\
+           & Year ($z$-scored)    & 1.65  & 1.04 & 2.67  & 1.63  & 1.03 & 2.59  \\
+    \midrule
+    Found & Intercept             & 10.76 & 3.31 & 35.24 & 17.86 & 4.80 & 67.86 \\
+          & LVC (vs JSlx)         & 1.34  & 0.63 & 2.83  & 1.06  & 0.46 & 2.27  \\
+          & Order (vs Both)       & 1.04  & 0.42 & 2.55  & 0.97  & 0.39 & 2.45  \\
+          & Realization (vs Both) & 1.36  & 0.60 & 3.06  & 0.88  & 0.37 & 2.09  \\
+          & Year ($z$-scored)     & 1.27  & 0.73 & 2.22  & 1.20  & 0.69 & 2.05  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+An extended model adds a journal $\times$ variation-type interaction in the selection stage (full estimates in Appendix~A). If institutional framing requirements drive selection, JSlx might show a larger gap between realization and order than LVC. The interaction coefficients represent the multiplicative change in the LVC effect for each variation type relative to the reference (both). These coefficients have wide intervals spanning no effect (order:LVC OR $\approx 0.54$, 95\% CrI 0.23--1.29; realization:LVC OR $\approx 0.66$, 95\% CrI 0.30--1.47), so the data don't clearly support differential selection by journal.
 
 A piecewise-linear year effect (two interior knots) tests whether selection trends are non-linear. The spline coefficients point in the same direction (ORs 1.19, 1.72, 1.32; all intervals spanning 1), consistent with the primary model's linear year assumption rather than distinct period effects.
 
@@ -135,16 +162,16 @@ A piecewise-linear year effect (two interior knots) tests whether selection tren
 The main asymmetry is in selection. Journals, variable type, and time shape which variables are tested, but tested variables show high and overlapping probabilities of social significance. This supports a selection-driven account of the literature: the bottleneck is which variables are studied, not whether tested variables yield positive findings once investigated. This conclusion concerns publication and research-design practices rather than the underlying capacity of grammatical variables to carry social meaning. In that sense, the record is informative not only about social meaning, but about what researchers have chosen to look for.
 
 \subsection{Implications for the Grammatical Invisibility Principle}
-The Grammatical Invisibility Principle (GIP) holds that grammatical variables are less accessible to social evaluation than phonological variables. \textcite{mackenzie2025spelling} conclude that for realization variables, robust evidence of social significance exists; for order variables, absence of evidence doesn't equal evidence of absence. The present analysis sharpens this: \emph{conditional on testing}, both realization and order variables succeed at comparable rates (88--94\%). This high success rate likely reflects a strong filter: once researchers choose to test a variable, they overwhelmingly report finding effects. A success rate near 90\% is either a triumph of sociolinguistic detection or a clue about which results survive the trip to print; the model cannot separate these. This suggests that the tested variables may be positively selected for plausibility. In other words, this likely represents the order-variable honour roll, not the whole graduating class. The finding undercuts the strong version of the GIP~-- that order variables \emph{can't} carry social meaning~-- while remaining agnostic about whether order variables are \emph{harder to perceive} or \emph{less frequently recruited}. On a causal-network view, the relevant question is not whether order variables \emph{can} carry social meaning, but which causal pathways (e.g., perceptual salience, frequency, register mediation) make them projectible targets for social evaluation. The current literature is sparse precisely where those pathways would need to be mapped.
+The Grammatical Invisibility Principle (GIP) holds that grammatical variables are less accessible to social evaluation than phonological variables. \textcite{mackenzie2025spelling} conclude that for realization variables, robust evidence of social significance exists; for order variables, absence of evidence doesn't equal evidence of absence. The present analysis sharpens this: \emph{conditional on testing}, both realization and order variables succeed at comparable rates (92--95\%). This high success rate likely reflects a strong filter: once researchers choose to test a variable, they overwhelmingly report finding effects. A success rate near 90\% is either a triumph of sociolinguistic detection or a clue about which results survive the trip to print; the model cannot separate these. This suggests that the tested variables may be positively selected for plausibility. In other words, this likely represents the order-variable honour roll, not the whole graduating class. The finding undercuts the strong version of the GIP~-- that order variables \emph{can't} carry social meaning~-- while remaining agnostic about whether order variables are \emph{harder to perceive} or \emph{less frequently recruited}. On a causal-network view, the relevant question is not whether order variables \emph{can} carry social meaning, but which causal pathways (e.g., perceptual salience, frequency, register mediation) make them projectible targets for social evaluation. The current literature is sparse precisely where those pathways would need to be mapped.
 
 \subsection{Relation to prior descriptive work}
 The descriptive goal of \textcite{mackenzie2025spelling} is to catalogue grammatical variables and assess the state of evidence for social significance in each domain. The present analysis retains their coding scheme and tallies without modification. The points of agreement are substantial: realization variables dominate the literature; order variables are understudied; perception and metalinguistic domains remain sparse.
 
 The focused revision is methodological. MacKenzie and Robinson devote considerable discussion (their Section 5) to selection into testing, including the file drawer problem and the fact that LVC doesn't require a social-significance framing. They explicitly warn against treating the scarcity of order-variable evidence as evidence that such effects don't exist, emphasizing that the relevant studies have largely not been done. What the present analysis adds is an explicit model for this selection mechanism. Rather than treating untested variables as missing data to be ignored, the joint model estimates the probability of testing and conditions the outcome analysis on testing. This formalizes what MacKenzie and Robinson discuss narratively.
 
-The model's selection estimates converge with their descriptive findings. They report that among production studies, LVC finds social significance at 92\% (143/156) compared to JSlx at 83\% (87/105). This difference ($\chi^2=4.65$, $p=.031$) supports their argument that LVC's lack of a social-significance framing requirement doesn't inflate publication bias~-- researchers who look for effects overwhelmingly find them.
+The model's selection estimates converge with their descriptive findings. In this dataset, among production studies, LVC finds social significance at 92\% (155/169) compared to JSlx at 83\% (87/105). This difference ($\chi^2=4.93$, $p=.026$) supports their argument that LVC's lack of a social-significance framing requirement doesn't inflate publication bias~-- researchers who look for effects overwhelmingly find them.
 
-The novelty is formalization rather than conceptual revision. The selection--outcome decomposition provides a principled statistical framework for claims that MacKenzie and Robinson already make informally. The difference in emphasis is slight: the high baseline success rate (~88--94\%) is the story, and the between-type comparison is null in part because of ceiling effects and limited order data.
+The novelty is formalization rather than conceptual revision. The selection--outcome decomposition provides a principled statistical framework for claims that MacKenzie and Robinson already make informally. The difference in emphasis is slight: the high baseline success rate (~92--95\%) is the story, and the between-type comparison is null in part because of ceiling effects and limited order data.
 
 \subsection{Limitations and future work}
 Order variables are rare and heavily concentrated in LVC~-- the journal that is \emph{less} likely to test for social significance. This constrains journal comparisons. Could the data distinguish a 15-point difference in success rates between realization and order? No. The baseline is too high, the order-variable sample too small. The null is underpowered, not confirmed. Also, the binary \enquote{found} outcome collapses heterogeneity in evidence strength (p-values, authors' qualitative judgments), and high success rates likely reflect publication bias. Finally, because the database indexes published studies, the model can't address file-drawer effects where testing occurs but null results aren't published. The model describes the published record, which acts as a filter on the underlying linguistic reality.
@@ -153,7 +180,7 @@ MacKenzie and Robinson also call for collaboration with formal syntacticians to 
 
 \section*{Acknowledgements}
 
-ChatGPT 5.2 and Claude Opus 4.5 assisted with analysis and drafting; the author is responsible for all claims and any errors.
+ChatGPT 5.2 and Claude Opus 4.5 assisted with analysis and drafting, but I'm responsible for all claims and any errors.
 
 \newpage
 \appendix
