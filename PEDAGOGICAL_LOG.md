@@ -457,3 +457,11 @@ Purpose: capture key modeling decisions, rationales, and lessons learned so the 
   - **Precision:** Explicitly noted JSlx's structural lack of order variables to preempt "extrapolation" critiques. Avoided implying derived contrasts that weren't modeled.
   - **Tone:** Adjusted Methods analogy to "simulate" (vs "fake") and tightened abstract scope ("reported success rates").
 - **Evidence:** `main.tex`.
+
+### 2026-01-10 — Frequentist p-value Contamination
+- **Topic:** Framework consistency
+- **Decision:** Removed χ²/p-value from journal comparison in Discussion; replaced with descriptive "9-point gap."
+- **Rationale:** A Bayesian paper shouldn't cite frequentist p-values, even for descriptive comparisons. It signals methodological confusion.
+- **Alternatives:** Keep the p-value with a caveat that it's a "descriptive chi-square"—rejected as unnecessarily muddy.
+- **Evidence:** `main.tex` line 172 (before fix).
+- **Follow-ups:** Scan for any other stray p-values or frequentist language.
